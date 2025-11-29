@@ -1,8 +1,10 @@
 ﻿// PrintingOrderManager.Application/Services/ServiceService.cs
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Core.Entities;
 using PrintingOrderManager.Core.Interfaces;
+using System.Linq;
 
 namespace PrintingOrderManager.Application.Services
 {
@@ -23,11 +25,17 @@ namespace PrintingOrderManager.Application.Services
             return _mapper.Map<IEnumerable<ServiceDto>>(services);
         }
 
+        public IQueryable<ServiceDto> GetServicesQueryable()
+        {
+            // Простой маппинг — не нужны Include, так как ServiceDto не содержит связанных сущностей
+            return _serviceRepository.GetQueryable()
+                .ProjectTo<ServiceDto>(_mapper.ConfigurationProvider);
+        }
+
         public async Task<ServiceDto> GetServiceByIdAsync(int id)
         {
             var service = await _serviceRepository.GetByIdAsync(id);
-            if (service == null) return null;
-            return _mapper.Map<ServiceDto>(service);
+            return service == null ? null : _mapper.Map<ServiceDto>(service);
         }
 
         public async Task AddServiceAsync(CreateServiceDto serviceDto)
@@ -55,8 +63,7 @@ namespace PrintingOrderManager.Application.Services
         public async Task<ServiceDto?> GetServiceByNameAsync(string name)
         {
             var service = await _serviceRepository.GetByNameAsync(name);
-            if (service == null) return null;
-            return _mapper.Map<ServiceDto>(service);
+            return service == null ? null : _mapper.Map<ServiceDto>(service);
         }
 
         public async Task<IEnumerable<ServiceDto>> GetServicesByPriceRangeAsync(decimal minPrice, decimal maxPrice)

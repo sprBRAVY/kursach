@@ -1,6 +1,5 @@
 ﻿// PrintingOrderManager.Web/Controllers/WorkersController.cs
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Web.Models;
@@ -34,11 +33,13 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var workers = (await _workerService.GetAllWorkersAsync()).AsQueryable();
+            // ✅ ИСПРАВЛЕНО: используем IQueryable напрямую
+            var workers = _workerService.GetWorkersQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                workers = workers.Where(w => w.WorkerFullName.Contains(searchString, StringComparison.OrdinalIgnoreCase) || (w.Contacts != null && w.Contacts.Contains(searchString, StringComparison.OrdinalIgnoreCase)));
+                workers = workers.Where(w => w.WorkerFullName.Contains(searchString) ||
+                                            (w.Contacts != null && w.Contacts.Contains(searchString)));
             }
 
             if (!string.IsNullOrEmpty(positionFilter))
@@ -52,10 +53,10 @@ namespace PrintingOrderManager.Web.Controllers
                     workers = workers.OrderByDescending(w => w.WorkerFullName);
                     break;
                 case "Position":
-                    workers = workers.OrderBy(w => w.Position == null ? string.Empty : w.Position);
+                    workers = workers.OrderBy(w => w.Position ?? "");
                     break;
                 case "position_desc":
-                    workers = workers.OrderByDescending(w => w.Position == null ? string.Empty : w.Position);
+                    workers = workers.OrderByDescending(w => w.Position ?? "");
                     break;
                 default:
                     workers = workers.OrderBy(w => w.WorkerFullName);
@@ -63,19 +64,16 @@ namespace PrintingOrderManager.Web.Controllers
             }
 
             ViewBag.SelectedPosition = positionFilter;
-
             int pageSize = 10;
-            return View(await PaginatedList<WorkerDto>.CreateAsync(workers.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<WorkerDto>.CreateAsync(workers, pageNumber ?? 1, pageSize));
         }
 
         // GET: Workers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
-
             var worker = await _workerService.GetWorkerByIdAsync(id.Value);
             if (worker == null) return NotFound();
-
             return View(worker);
         }
 
@@ -102,10 +100,8 @@ namespace PrintingOrderManager.Web.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-
             var worker = await _workerService.GetWorkerByIdAsync(id.Value);
             if (worker == null) return NotFound();
-
             var updateDto = new UpdateWorkerDto
             {
                 WorkerId = worker.WorkerId,
@@ -113,7 +109,6 @@ namespace PrintingOrderManager.Web.Controllers
                 Position = worker.Position,
                 Contacts = worker.Contacts
             };
-
             return View(updateDto);
         }
 
@@ -123,7 +118,6 @@ namespace PrintingOrderManager.Web.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("WorkerId,WorkerFullName,Position,Contacts")] UpdateWorkerDto workerDto)
         {
             if (id != workerDto.WorkerId) return NotFound();
-
             if (ModelState.IsValid)
             {
                 try
@@ -143,10 +137,8 @@ namespace PrintingOrderManager.Web.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-
             var worker = await _workerService.GetWorkerByIdAsync(id.Value);
             if (worker == null) return NotFound();
-
             return View(worker);
         }
 

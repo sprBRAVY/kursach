@@ -1,6 +1,5 @@
 ﻿// PrintingOrderManager.Web/Controllers/OrderItemsController.cs
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Web.Models;
@@ -24,7 +23,6 @@ namespace PrintingOrderManager.Web.Controllers
             _equipmentService = equipmentService;
         }
 
-        // GET: OrderItems
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? orderIdFilter, int? serviceIdFilter, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -43,11 +41,12 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var orderItems = (await _orderItemService.GetAllOrderItemsAsync()).AsQueryable();
+            // ✅ ИЗМЕНЕНО
+            var orderItems = _orderItemService.GetOrderItemsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                orderItems = orderItems.Where(oi => oi.ServiceName.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+                orderItems = orderItems.Where(oi => oi.ServiceName.Contains(searchString));
             }
 
             if (orderIdFilter.HasValue && orderIdFilter.Value > 0)
@@ -88,21 +87,18 @@ namespace PrintingOrderManager.Web.Controllers
             ViewBag.SelectedServiceId = serviceIdFilter;
 
             int pageSize = 10;
-            return View(await PaginatedList<OrderItemDto>.CreateAsync(orderItems.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<OrderItemDto>.CreateAsync(orderItems, pageNumber ?? 1, pageSize));
         }
 
-        // GET: OrderItems/Details/5
+        // ... остальные методы — БЕЗ ИЗМЕНЕНИЙ
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
-
             var orderItem = await _orderItemService.GetOrderItemByIdAsync(id.Value);
             if (orderItem == null) return NotFound();
-
             return View(orderItem);
         }
 
-        // GET: OrderItems/Create
         public async Task<IActionResult> Create()
         {
             ViewBag.Orders = await _orderService.GetAllOrdersAsync();
@@ -112,7 +108,6 @@ namespace PrintingOrderManager.Web.Controllers
             return View();
         }
 
-        // POST: OrderItems/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrderId,ServiceId,WorkerId,EquipmentId,Paper,Color,Quantity,Cost")] CreateOrderItemDto orderItemDto)
@@ -129,19 +124,15 @@ namespace PrintingOrderManager.Web.Controllers
             return View(orderItemDto);
         }
 
-        // GET: OrderItems/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-
             var orderItem = await _orderItemService.GetOrderItemByIdAsync(id.Value);
             if (orderItem == null) return NotFound();
-
             ViewBag.Orders = await _orderService.GetAllOrdersAsync();
             ViewBag.Services = await _serviceService.GetAllServicesAsync();
             ViewBag.Workers = await _workerService.GetAllWorkersAsync();
             ViewBag.Equipment = await _equipmentService.GetAllEquipmentAsync();
-
             var updateDto = new UpdateOrderItemDto
             {
                 ItemId = orderItem.ItemId,
@@ -154,17 +145,14 @@ namespace PrintingOrderManager.Web.Controllers
                 Quantity = orderItem.Quantity,
                 Cost = orderItem.Cost
             };
-
             return View(updateDto);
         }
 
-        // POST: OrderItems/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ItemId,OrderId,ServiceId,WorkerId,EquipmentId,Paper,Color,Quantity,Cost")] UpdateOrderItemDto orderItemDto)
         {
             if (id != orderItemDto.ItemId) return NotFound();
-
             if (ModelState.IsValid)
             {
                 try
@@ -184,18 +172,14 @@ namespace PrintingOrderManager.Web.Controllers
             return View(orderItemDto);
         }
 
-        // GET: OrderItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-
             var orderItem = await _orderItemService.GetOrderItemByIdAsync(id.Value);
             if (orderItem == null) return NotFound();
-
             return View(orderItem);
         }
 
-        // POST: OrderItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

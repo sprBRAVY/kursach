@@ -1,6 +1,5 @@
 ﻿// PrintingOrderManager.Web/Controllers/PaymentsController.cs
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Web.Models;
@@ -18,7 +17,6 @@ namespace PrintingOrderManager.Web.Controllers
             _orderService = orderService;
         }
 
-        // GET: Payments
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? orderIdFilter, string statusFilter, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -36,11 +34,11 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var payments = (await _paymentService.GetAllPaymentsAsync()).AsQueryable();
+            // ✅ ИЗМЕНЕНО
+            var payments = _paymentService.GetPaymentsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                // Поиск по сумме (как строке)
                 payments = payments.Where(p => p.Amount.ToString().Contains(searchString));
             }
 
@@ -75,28 +73,24 @@ namespace PrintingOrderManager.Web.Controllers
             ViewBag.SelectedStatus = statusFilter;
 
             int pageSize = 10;
-            return View(await PaginatedList<PaymentDto>.CreateAsync(payments.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<PaymentDto>.CreateAsync(payments, pageNumber ?? 1, pageSize));
         }
 
-        // GET: Payments/Details/5
+        // ... остальные методы — БЕЗ ИЗМЕНЕНИЙ
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
-
             var payment = await _paymentService.GetPaymentByIdAsync(id.Value);
             if (payment == null) return NotFound();
-
             return View(payment);
         }
 
-        // GET: Payments/Create
         public async Task<IActionResult> Create()
         {
             ViewBag.Orders = await _orderService.GetAllOrdersAsync();
             return View();
         }
 
-        // POST: Payments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrderId,Amount,PaymentDate,PaymentStatus")] CreatePaymentDto paymentDto)
@@ -110,16 +104,12 @@ namespace PrintingOrderManager.Web.Controllers
             return View(paymentDto);
         }
 
-        // GET: Payments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-
             var payment = await _paymentService.GetPaymentByIdAsync(id.Value);
             if (payment == null) return NotFound();
-
             ViewBag.Orders = await _orderService.GetAllOrdersAsync();
-
             var updateDto = new UpdatePaymentDto
             {
                 PaymentId = payment.PaymentId,
@@ -128,17 +118,14 @@ namespace PrintingOrderManager.Web.Controllers
                 PaymentDate = payment.PaymentDate,
                 PaymentStatus = payment.PaymentStatus
             };
-
             return View(updateDto);
         }
 
-        // POST: Payments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("PaymentId,OrderId,Amount,PaymentDate,PaymentStatus")] UpdatePaymentDto paymentDto)
         {
             if (id != paymentDto.PaymentId) return NotFound();
-
             if (ModelState.IsValid)
             {
                 try
@@ -155,18 +142,14 @@ namespace PrintingOrderManager.Web.Controllers
             return View(paymentDto);
         }
 
-        // GET: Payments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-
             var payment = await _paymentService.GetPaymentByIdAsync(id.Value);
             if (payment == null) return NotFound();
-
             return View(payment);
         }
 
-        // POST: Payments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

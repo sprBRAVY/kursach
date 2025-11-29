@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// PrintingOrderManager.Infrastructure.Repositories/EquipmentRepository.cs
+using Microsoft.EntityFrameworkCore;
 using PrintingOrderManager.Core.Entities;
 using PrintingOrderManager.Core.Interfaces;
 using PrintingOrderManager.Infrastructure.Data;

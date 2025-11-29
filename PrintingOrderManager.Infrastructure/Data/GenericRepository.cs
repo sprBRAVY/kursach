@@ -1,6 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// PrintingOrderManager.Infrastructure.Repositories/GenericRepository.cs
+using Microsoft.EntityFrameworkCore;
 using PrintingOrderManager.Core.Interfaces;
 using PrintingOrderManager.Infrastructure.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PrintingOrderManager.Infrastructure.Repositories
 {
@@ -13,35 +18,40 @@ namespace PrintingOrderManager.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task AddAsync(T entity)
+        public virtual IQueryable<T> GetQueryable()
+        {
+            return _context.Set<T>(); // ← ВАЖНО: возвращает IQueryable для ProjectTo
+        }
+
+        public virtual async Task AddAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(); // ✅ ОБЯЗАТЕЛЬНО
         }
 
-        public async Task UpdateAsync(T entity)
+        public virtual async Task UpdateAsync(T entity)
         {
-            _context.Entry(entity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            _context.Set<T>().Update(entity);
+            await _context.SaveChangesAsync(); // ✅ ОБЯЗАТЕЛЬНО
         }
 
-        public async Task DeleteAsync(int id)
+        public virtual async Task DeleteAsync(int id)
         {
-            var entity = await _context.Set<T>().FindAsync(id);
+            var entity = await GetByIdAsync(id);
             if (entity != null)
             {
                 _context.Set<T>().Remove(entity);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); // ✅ ОБЯЗАТЕЛЬНО
             }
         }
     }

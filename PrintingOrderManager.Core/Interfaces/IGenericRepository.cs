@@ -1,7 +1,7 @@
-﻿using System;
+﻿// PrintingOrderManager.Core.Interfaces/IGenericRepository.cs
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PrintingOrderManager.Core.Interfaces
@@ -13,6 +13,6 @@ namespace PrintingOrderManager.Core.Interfaces
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
+        IQueryable<T> GetQueryable(); // ← ДОБАВЛЕНО
     }
-
 }

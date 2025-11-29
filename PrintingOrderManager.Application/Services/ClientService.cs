@@ -1,8 +1,10 @@
-﻿// PrintingOrderManager.Application/Services/ClientService.cs
+﻿// PrintingOrderManager.Application.Services/ClientService.cs
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Core.Entities;
 using PrintingOrderManager.Core.Interfaces;
+using System.Linq;
 
 namespace PrintingOrderManager.Application.Services
 {
@@ -23,11 +25,16 @@ namespace PrintingOrderManager.Application.Services
             return _mapper.Map<IEnumerable<ClientDto>>(clients);
         }
 
+        public IQueryable<ClientDto> GetClientsQueryable()
+        {
+            return _clientRepository.GetQueryable()
+                .ProjectTo<ClientDto>(_mapper.ConfigurationProvider);
+        }
+
         public async Task<ClientDto> GetClientByIdAsync(int id)
         {
             var client = await _clientRepository.GetByIdAsync(id);
-            if (client == null) return null;
-            return _mapper.Map<ClientDto>(client);
+            return client == null ? null : _mapper.Map<ClientDto>(client);
         }
 
         public async Task AddClientAsync(CreateClientDto clientDto)
@@ -40,9 +47,7 @@ namespace PrintingOrderManager.Application.Services
         {
             var existingClient = await _clientRepository.GetByIdAsync(id);
             if (existingClient == null)
-            {
                 throw new KeyNotFoundException($"Client with ID {id} not found.");
-            }
             _mapper.Map(clientDto, existingClient);
             await _clientRepository.UpdateAsync(existingClient);
         }
@@ -55,8 +60,7 @@ namespace PrintingOrderManager.Application.Services
         public async Task<ClientDto?> GetClientByNameAsync(string name)
         {
             var client = await _clientRepository.GetByNameAsync(name);
-            if (client == null) return null;
-            return _mapper.Map<ClientDto>(client);
+            return client == null ? null : _mapper.Map<ClientDto>(client);
         }
     }
 }

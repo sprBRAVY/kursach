@@ -1,11 +1,13 @@
-﻿// PrintingOrderManager.Application/Services/IEquipmentService.cs
+﻿// PrintingOrderManager.Application.Services/IEquipmentService.cs
 using PrintingOrderManager.Core.DTOs;
+using System.Linq;
 
 namespace PrintingOrderManager.Application.Services
 {
     public interface IEquipmentService
     {
         Task<IEnumerable<EquipmentDto>> GetAllEquipmentAsync();
+        IQueryable<EquipmentDto> GetEquipmentQueryable(); // ← ДОБАВЛЕНО
         Task<EquipmentDto> GetEquipmentByIdAsync(int id);
         Task AddEquipmentAsync(CreateEquipmentDto equipmentDto);
         Task UpdateEquipmentAsync(int id, UpdateEquipmentDto equipmentDto);

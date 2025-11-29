@@ -1,11 +1,13 @@
 ﻿// PrintingOrderManager.Application/Services/IPaymentService.cs
 using PrintingOrderManager.Core.DTOs;
+using System.Linq;
 
 namespace PrintingOrderManager.Application.Services
 {
     public interface IPaymentService
     {
         Task<IEnumerable<PaymentDto>> GetAllPaymentsAsync();
+        IQueryable<PaymentDto> GetPaymentsQueryable(); // ← НОВЫЙ МЕТОД
         Task<PaymentDto> GetPaymentByIdAsync(int id);
         Task AddPaymentAsync(CreatePaymentDto paymentDto);
         Task UpdatePaymentAsync(int id, UpdatePaymentDto paymentDto);

@@ -1,6 +1,5 @@
-﻿// PrintingOrderManager.Web/Controllers/EquipmentController.cs
+﻿// PrintingOrderManager.Web.Controllers/EquipmentController.cs
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Web.Models;
@@ -16,7 +15,6 @@ namespace PrintingOrderManager.Web.Controllers
             _equipmentService = equipmentService;
         }
 
-        // GET: Equipment
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, string modelFilter, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -34,11 +32,13 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var equipment = (await _equipmentService.GetAllEquipmentAsync()).AsQueryable();
+            // ✅ ИСПОЛЬЗУЕМ IQueryable напрямую
+            var equipment = _equipmentService.GetEquipmentQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                equipment = equipment.Where(e => e.EquipmentName.Contains(searchString, StringComparison.OrdinalIgnoreCase) || (e.Specifications != null && e.Specifications.Contains(searchString, StringComparison.OrdinalIgnoreCase)));
+                equipment = equipment.Where(e => e.EquipmentName.Contains(searchString) ||
+                                                (!string.IsNullOrEmpty(e.Specifications) && e.Specifications.Contains(searchString)));
             }
 
             if (!string.IsNullOrEmpty(modelFilter))
@@ -52,10 +52,10 @@ namespace PrintingOrderManager.Web.Controllers
                     equipment = equipment.OrderByDescending(e => e.EquipmentName);
                     break;
                 case "Model":
-                    equipment = equipment.OrderBy(e => e.Model == null ? string.Empty : e.Model);
+                    equipment = equipment.OrderBy(e => e.Model ?? "");
                     break;
                 case "model_desc":
-                    equipment = equipment.OrderByDescending(e => e.Model == null ? string.Empty : e.Model);
+                    equipment = equipment.OrderByDescending(e => e.Model ?? "");
                     break;
                 default:
                     equipment = equipment.OrderBy(e => e.EquipmentName);
@@ -63,32 +63,26 @@ namespace PrintingOrderManager.Web.Controllers
             }
 
             ViewBag.SelectedModel = modelFilter;
-
             int pageSize = 10;
-            return View(await PaginatedList<EquipmentDto>.CreateAsync(equipment.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<EquipmentDto>.CreateAsync(equipment, pageNumber ?? 1, pageSize));
         }
 
-        // GET: Equipment/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
-
             var equipment = await _equipmentService.GetEquipmentByIdAsync(id.Value);
             if (equipment == null) return NotFound();
-
             return View(equipment);
         }
 
-        // GET: Equipment/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Equipment/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EquipmentName,Model,Specifications")] CreateEquipmentDto equipmentDto)
+        public async Task<IActionResult> Create(CreateEquipmentDto equipmentDto) // ✅ Убран [Bind]
         {
             if (ModelState.IsValid)
             {
@@ -98,14 +92,11 @@ namespace PrintingOrderManager.Web.Controllers
             return View(equipmentDto);
         }
 
-        // GET: Equipment/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-
             var equipment = await _equipmentService.GetEquipmentByIdAsync(id.Value);
             if (equipment == null) return NotFound();
-
             var updateDto = new UpdateEquipmentDto
             {
                 EquipmentId = equipment.EquipmentId,
@@ -113,17 +104,14 @@ namespace PrintingOrderManager.Web.Controllers
                 Model = equipment.Model,
                 Specifications = equipment.Specifications
             };
-
             return View(updateDto);
         }
 
-        // POST: Equipment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EquipmentId,EquipmentName,Model,Specifications")] UpdateEquipmentDto equipmentDto)
+        public async Task<IActionResult> Edit(int id, UpdateEquipmentDto equipmentDto) // ✅ Убран [Bind]
         {
             if (id != equipmentDto.EquipmentId) return NotFound();
-
             if (ModelState.IsValid)
             {
                 try
@@ -139,18 +127,14 @@ namespace PrintingOrderManager.Web.Controllers
             return View(equipmentDto);
         }
 
-        // GET: Equipment/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-
             var equipment = await _equipmentService.GetEquipmentByIdAsync(id.Value);
             if (equipment == null) return NotFound();
-
             return View(equipment);
         }
 
-        // POST: Equipment/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

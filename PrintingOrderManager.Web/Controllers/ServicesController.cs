@@ -1,6 +1,5 @@
 ﻿// PrintingOrderManager.Web/Controllers/ServicesController.cs
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Web.Models;
@@ -16,7 +15,6 @@ namespace PrintingOrderManager.Web.Controllers
             _serviceService = serviceService;
         }
 
-        // GET: Services
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, decimal? minPriceFilter, decimal? maxPriceFilter, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -34,11 +32,12 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var services = (await _serviceService.GetAllServicesAsync()).AsQueryable();
+            // ✅ ИЗМЕНЕНО
+            var services = _serviceService.GetServicesQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                services = services.Where(s => s.ServiceName.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+                services = services.Where(s => s.ServiceName.Contains(searchString));
             }
 
             if (minPriceFilter.HasValue)
@@ -71,27 +70,23 @@ namespace PrintingOrderManager.Web.Controllers
             ViewBag.MaxPriceFilter = maxPriceFilter;
 
             int pageSize = 10;
-            return View(await PaginatedList<ServiceDto>.CreateAsync(services.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<ServiceDto>.CreateAsync(services, pageNumber ?? 1, pageSize));
         }
 
-        // GET: Services/Details/5
+        // ... остальные методы — БЕЗ ИЗМЕНЕНИЙ
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
-
             var service = await _serviceService.GetServiceByIdAsync(id.Value);
             if (service == null) return NotFound();
-
             return View(service);
         }
 
-        // GET: Services/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Services/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ServiceName,Description,UnitPrice")] CreateServiceDto serviceDto)
@@ -104,14 +99,11 @@ namespace PrintingOrderManager.Web.Controllers
             return View(serviceDto);
         }
 
-        // GET: Services/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-
             var service = await _serviceService.GetServiceByIdAsync(id.Value);
             if (service == null) return NotFound();
-
             var updateDto = new UpdateServiceDto
             {
                 ServiceId = service.ServiceId,
@@ -119,17 +111,14 @@ namespace PrintingOrderManager.Web.Controllers
                 Description = service.Description,
                 UnitPrice = service.UnitPrice
             };
-
             return View(updateDto);
         }
 
-        // POST: Services/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ServiceId,ServiceName,Description,UnitPrice")] UpdateServiceDto serviceDto)
         {
             if (id != serviceDto.ServiceId) return NotFound();
-
             if (ModelState.IsValid)
             {
                 try
@@ -145,18 +134,14 @@ namespace PrintingOrderManager.Web.Controllers
             return View(serviceDto);
         }
 
-        // GET: Services/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-
             var service = await _serviceService.GetServiceByIdAsync(id.Value);
             if (service == null) return NotFound();
-
             return View(service);
         }
 
-        // POST: Services/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

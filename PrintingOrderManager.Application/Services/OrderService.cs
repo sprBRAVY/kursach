@@ -1,8 +1,11 @@
-﻿// PrintingOrderManager.Application/Services/OrderService.cs
+﻿// PrintingOrderManager.Application.Services/OrderService.cs
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Core.Entities;
 using PrintingOrderManager.Core.Interfaces;
+using System.Linq;
 
 namespace PrintingOrderManager.Application.Services
 {
@@ -25,21 +28,24 @@ namespace PrintingOrderManager.Application.Services
             return _mapper.Map<IEnumerable<OrderDto>>(orders);
         }
 
+        public IQueryable<OrderDto> GetOrdersQueryable()
+        {
+            return _orderRepository.GetQueryable()
+                .Include(o => o.Client)
+                .ProjectTo<OrderDto>(_mapper.ConfigurationProvider);
+        }
+
         public async Task<OrderDto> GetOrderByIdAsync(int id)
         {
             var order = await _orderRepository.GetByIdWithDetailsAsync(id);
-            if (order == null) return null;
-            return _mapper.Map<OrderDto>(order);
+            return order == null ? null : _mapper.Map<OrderDto>(order);
         }
 
         public async Task AddOrderAsync(CreateOrderDto orderDto)
         {
             var client = await _clientRepository.GetByIdAsync(orderDto.ClientId);
             if (client == null)
-            {
                 throw new ArgumentException($"Client with ID {orderDto.ClientId} not found.");
-            }
-
             var order = _mapper.Map<Order>(orderDto);
             await _orderRepository.AddAsync(order);
         }
@@ -48,16 +54,10 @@ namespace PrintingOrderManager.Application.Services
         {
             var existingOrder = await _orderRepository.GetByIdAsync(id);
             if (existingOrder == null)
-            {
                 throw new KeyNotFoundException($"Order with ID {id} not found.");
-            }
-
             var client = await _clientRepository.GetByIdAsync(orderDto.ClientId);
             if (client == null)
-            {
                 throw new ArgumentException($"Client with ID {orderDto.ClientId} not found.");
-            }
-
             _mapper.Map(orderDto, existingOrder);
             await _orderRepository.UpdateAsync(existingOrder);
         }

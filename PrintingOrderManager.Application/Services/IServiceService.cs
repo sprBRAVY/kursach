@@ -1,11 +1,13 @@
 ﻿// PrintingOrderManager.Application/Services/IServiceService.cs
 using PrintingOrderManager.Core.DTOs;
+using System.Linq;
 
 namespace PrintingOrderManager.Application.Services
 {
     public interface IServiceService
     {
         Task<IEnumerable<ServiceDto>> GetAllServicesAsync();
+        IQueryable<ServiceDto> GetServicesQueryable(); // ← НОВЫЙ МЕТОД
         Task<ServiceDto> GetServiceByIdAsync(int id);
         Task AddServiceAsync(CreateServiceDto serviceDto);
         Task UpdateServiceAsync(int id, UpdateServiceDto serviceDto);

@@ -1,6 +1,5 @@
-﻿// PrintingOrderManager.Web/Controllers/ClientsController.cs
+﻿// PrintingOrderManager.Web.Controllers/ClientsController.cs
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Web.Models;
@@ -16,7 +15,6 @@ namespace PrintingOrderManager.Web.Controllers
             _clientService = clientService;
         }
 
-        // GET: Clients
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -34,11 +32,13 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var clients = (await _clientService.GetAllClientsAsync()).AsQueryable();
+            // ✅ ИСПОЛЬЗУЕМ IQueryable напрямую (без AsQueryable() и GetAllAsync)
+            var clients = _clientService.GetClientsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                clients = clients.Where(s => s.ClientName.Contains(searchString) || (s.Contacts != null && s.Contacts.Contains(searchString)));
+                clients = clients.Where(s => s.ClientName.Contains(searchString) ||
+                                            (!string.IsNullOrEmpty(s.Contacts) && s.Contacts.Contains(searchString)));
             }
 
             switch (sortOrder)
@@ -47,10 +47,10 @@ namespace PrintingOrderManager.Web.Controllers
                     clients = clients.OrderByDescending(s => s.ClientName);
                     break;
                 case "Contacts":
-                    clients = clients.OrderBy(s => s.Contacts == null ? "" : s.Contacts);
+                    clients = clients.OrderBy(s => s.Contacts ?? "");
                     break;
                 case "contacts_desc":
-                    clients = clients.OrderByDescending(s => s.Contacts == null ? "" : s.Contacts);
+                    clients = clients.OrderByDescending(s => s.Contacts ?? "");
                     break;
                 default:
                     clients = clients.OrderBy(s => s.ClientName);
@@ -58,30 +58,25 @@ namespace PrintingOrderManager.Web.Controllers
             }
 
             int pageSize = 10;
-            return View(await PaginatedList<ClientDto>.CreateAsync(clients.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<ClientDto>.CreateAsync(clients, pageNumber ?? 1, pageSize));
         }
 
-        // GET: Clients/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
-
             var client = await _clientService.GetClientByIdAsync(id.Value);
             if (client == null) return NotFound();
-
             return View(client);
         }
 
-        // GET: Clients/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Clients/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClientName,Contacts")] CreateClientDto clientDto)
+        public async Task<IActionResult> Create(CreateClientDto clientDto) // ✅ Убран [Bind]
         {
             if (ModelState.IsValid)
             {
@@ -91,31 +86,25 @@ namespace PrintingOrderManager.Web.Controllers
             return View(clientDto);
         }
 
-        // GET: Clients/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-
             var client = await _clientService.GetClientByIdAsync(id.Value);
             if (client == null) return NotFound();
-
             var updateDto = new UpdateClientDto
             {
                 ClientId = client.ClientId,
                 ClientName = client.ClientName,
                 Contacts = client.Contacts
             };
-
             return View(updateDto);
         }
 
-        // POST: Clients/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ClientId,ClientName,Contacts")] UpdateClientDto clientDto)
+        public async Task<IActionResult> Edit(int id, UpdateClientDto clientDto) // ✅ Убран [Bind]
         {
             if (id != clientDto.ClientId) return NotFound();
-
             if (ModelState.IsValid)
             {
                 try
@@ -131,18 +120,14 @@ namespace PrintingOrderManager.Web.Controllers
             return View(clientDto);
         }
 
-        // GET: Clients/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-
             var client = await _clientService.GetClientByIdAsync(id.Value);
             if (client == null) return NotFound();
-
             return View(client);
         }
 
-        // POST: Clients/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

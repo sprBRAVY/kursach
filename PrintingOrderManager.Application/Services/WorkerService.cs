@@ -1,8 +1,10 @@
 ﻿// PrintingOrderManager.Application/Services/WorkerService.cs
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Core.Entities;
 using PrintingOrderManager.Core.Interfaces;
+using System.Linq;
 
 namespace PrintingOrderManager.Application.Services
 {
@@ -23,11 +25,16 @@ namespace PrintingOrderManager.Application.Services
             return _mapper.Map<IEnumerable<WorkerDto>>(workers);
         }
 
+        public IQueryable<WorkerDto> GetWorkersQueryable()
+        {
+            return _workerRepository.GetQueryable()
+                .ProjectTo<WorkerDto>(_mapper.ConfigurationProvider);
+        }
+
         public async Task<WorkerDto> GetWorkerByIdAsync(int id)
         {
             var worker = await _workerRepository.GetByIdAsync(id);
-            if (worker == null) return null;
-            return _mapper.Map<WorkerDto>(worker);
+            return worker == null ? null : _mapper.Map<WorkerDto>(worker);
         }
 
         public async Task AddWorkerAsync(CreateWorkerDto workerDto)
@@ -40,9 +47,7 @@ namespace PrintingOrderManager.Application.Services
         {
             var existingWorker = await _workerRepository.GetByIdAsync(id);
             if (existingWorker == null)
-            {
                 throw new KeyNotFoundException($"Worker with ID {id} not found.");
-            }
             _mapper.Map(workerDto, existingWorker);
             await _workerRepository.UpdateAsync(existingWorker);
         }
@@ -55,8 +60,7 @@ namespace PrintingOrderManager.Application.Services
         public async Task<WorkerDto?> GetWorkerByNameAsync(string name)
         {
             var worker = await _workerRepository.GetByNameAsync(name);
-            if (worker == null) return null;
-            return _mapper.Map<WorkerDto>(worker);
+            return worker == null ? null : _mapper.Map<WorkerDto>(worker);
         }
 
         public async Task<IEnumerable<WorkerDto>> GetWorkersByPositionAsync(string position)
