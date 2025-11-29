@@ -1,0 +1,78 @@
+﻿@model PrintingOrderManager.Core.DTOs.CreateOrderItemDto
+
+@{
+    ViewData["Title"] = "Создать элемент заказа";
+}
+
+<h1>Создать</h1>
+
+<h4>Элемент заказа</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="OrderId" class="control-label"></label>
+                <select asp-for="OrderId" class="form-control" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(ViewBag.Orders, "OrderId", "OrderId"))">
+                    <option value="">Выберите заказ</option>
+                </select>
+                <span asp-validation-for="OrderId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ServiceId" class="control-label"></label>
+                <select asp-for="ServiceId" class="form-control" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(ViewBag.Services, "ServiceId", "ServiceName"))">
+                    <option value="">Выберите услугу</option>
+                </select>
+                <span asp-validation-for="ServiceId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WorkerId" class="control-label"></label>
+                <select asp-for="WorkerId" class="form-control" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(ViewBag.Workers, "WorkerId", "WorkerFullName"))">
+                    <option value="">Выберите работника</option>
+                </select>
+                <span asp-validation-for="WorkerId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EquipmentId" class="control-label"></label>
+                <select asp-for="EquipmentId" class="form-control" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(ViewBag.Equipment, "EquipmentId", "EquipmentName"))">
+                    <option value="">Выберите оборудование</option>
+                </select>
+                <span asp-validation-for="EquipmentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Paper" class="control-label"></label>
+                <input asp-for="Paper" class="form-control" />
+                <span asp-validation-for="Paper" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Color" class="control-label"></label>
+                <input asp-for="Color" class="form-control" />
+                <span asp-validation-for="Color" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cost" class="control-label"></label>
+                <input asp-for="Cost" class="form-control" />
+                <span asp-validation-for="Cost" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Создать" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Вернуться к списку</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

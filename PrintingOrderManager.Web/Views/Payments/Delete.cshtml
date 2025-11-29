@@ -1,0 +1,51 @@
+﻿@model PrintingOrderManager.Core.DTOs.PaymentDto
+
+@{
+    ViewData["Title"] = "Удалить платеж";
+}
+
+<h1>Удалить</h1>
+
+<h3>Вы уверены, что хотите удалить этот платеж?</h3>
+<div>
+    <h4>Платеж</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PaymentId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PaymentId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OrderId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OrderId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Amount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Amount)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PaymentDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PaymentDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PaymentStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PaymentStatus)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="PaymentId" />
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a asp-action="Index">Вернуться к списку</a>
+    </form>
+</div>

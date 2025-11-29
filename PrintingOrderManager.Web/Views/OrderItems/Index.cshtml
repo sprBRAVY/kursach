@@ -1,0 +1,129 @@
+﻿@model PrintingOrderManager.Web.Models.PaginatedList<PrintingOrderManager.Core.DTOs.OrderItemDto>
+
+@{
+    ViewData["Title"] = "Элементы заказа";
+}
+
+<h1>Элементы заказа</h1>
+
+<p>
+    <a asp-action="Create">Создать новый</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Поиск по названию услуги: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <label for="orderIdFilter">Заказ:</label>
+            <select name="orderIdFilter" id="orderIdFilter" class="form-control d-inline-block w-auto">
+                <option value="">Все заказы</option>
+                @foreach (var order in ViewBag.Orders)
+                {
+                    <option value="@order.OrderId" selected="@(ViewBag.SelectedOrderId?.ToString() == order.OrderId.ToString())">Заказ #@order.OrderId (Клиент: @order.ClientName)</option>
+                }
+            </select>
+            <label for="serviceIdFilter">Услуга:</label>
+            <select name="serviceIdFilter" id="serviceIdFilter" class="form-control d-inline-block w-auto">
+                <option value="">Все услуги</option>
+                @foreach (var service in ViewBag.Services)
+                {
+                    <option value="@service.ServiceId" selected="@(ViewBag.SelectedServiceId?.ToString() == service.ServiceId.ToString())">@service.ServiceName</option>
+                }
+            </select>
+            <input type="submit" value="Найти" class="btn btn-default" /> |
+            <a asp-action="Index">Вернуться к полному списку</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["OrderSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().OrderId)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ServiceSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().ServiceName)</a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().WorkerFullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().EquipmentName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Paper)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Color)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Quantity)
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CostSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().Cost)</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WorkerFullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EquipmentName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Paper)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Color)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cost)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ItemId">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@item.ItemId">Детали</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ItemId">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-orderIdFilter="@ViewBag.SelectedOrderId"
+   asp-route-serviceIdFilter="@ViewBag.SelectedServiceId"
+   class="btn btn-default @prevDisabled">
+    Назад
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-orderIdFilter="@ViewBag.SelectedOrderId"
+   asp-route-serviceIdFilter="@ViewBag.SelectedServiceId"
+   class="btn btn-default @nextDisabled">
+    Вперед
+</a>

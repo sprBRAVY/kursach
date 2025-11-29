@@ -1,0 +1,87 @@
+﻿@model PrintingOrderManager.Web.Models.PaginatedList<PrintingOrderManager.Core.DTOs.ServiceDto>
+
+@{
+    ViewData["Title"] = "Услуги";
+}
+
+<h1>Услуги</h1>
+
+<p>
+    <a asp-action="Create">Создать новую</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Поиск по названию: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <label for="minPriceFilter">Мин. цена:</label>
+            <input type="number" step="0.01" name="minPriceFilter" value="@ViewBag.MinPriceFilter" class="form-control d-inline-block w-auto" />
+            <label for="maxPriceFilter">Макс. цена:</label>
+            <input type="number" step="0.01" name="maxPriceFilter" value="@ViewBag.MaxPriceFilter" class="form-control d-inline-block w-auto" />
+            <input type="submit" value="Найти" class="btn btn-default" /> |
+            <a asp-action="Index">Вернуться к полному списку</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().ServiceName)</a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Description)
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().UnitPrice)</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnitPrice)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ServiceId">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@item.ServiceId">Детали</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ServiceId">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-minPriceFilter="@ViewBag.MinPriceFilter"
+   asp-route-maxPriceFilter="@ViewBag.MaxPriceFilter"
+   class="btn btn-default @prevDisabled">
+    Назад
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-minPriceFilter="@ViewBag.MinPriceFilter"
+   asp-route-maxPriceFilter="@ViewBag.MaxPriceFilter"
+   class="btn btn-default @nextDisabled">
+    Вперед
+</a>

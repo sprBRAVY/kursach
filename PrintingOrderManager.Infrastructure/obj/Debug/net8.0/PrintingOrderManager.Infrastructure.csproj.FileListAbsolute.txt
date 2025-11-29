@@ -1,0 +1,17 @@
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\bin\Debug\net8.0\PrintingOrderManager.Infrastructure.deps.json
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\bin\Debug\net8.0\PrintingOrderManager.Infrastructure.runtimeconfig.json
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\bin\Debug\net8.0\PrintingOrderManager.Infrastructure.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\bin\Debug\net8.0\PrintingOrderManager.Infrastructure.pdb
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\bin\Debug\net8.0\PrintingOrderManager.Core.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\bin\Debug\net8.0\PrintingOrderManager.Core.pdb
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\obj\Debug\net8.0\PrintingOrderManager.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\obj\Debug\net8.0\PrintingOrderManager.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\obj\Debug\net8.0\PrintingOrderManager.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\obj\Debug\net8.0\PrintingOrderManager.Infrastructure.AssemblyInfo.cs
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\obj\Debug\net8.0\PrintingOrderManager.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\obj\Debug\net8.0\Printing.AC9E0F64.Up2Date
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\obj\Debug\net8.0\PrintingOrderManager.Infrastructure.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\obj\Debug\net8.0\refint\PrintingOrderManager.Infrastructure.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\obj\Debug\net8.0\PrintingOrderManager.Infrastructure.pdb
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\obj\Debug\net8.0\PrintingOrderManager.Infrastructure.genruntimeconfig.cache
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Infrastructure\obj\Debug\net8.0\ref\PrintingOrderManager.Infrastructure.dll

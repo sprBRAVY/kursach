@@ -1,0 +1,17 @@
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\bin\Debug\net8.0\PrintingOrderManager.Application.deps.json
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\bin\Debug\net8.0\PrintingOrderManager.Application.runtimeconfig.json
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\bin\Debug\net8.0\PrintingOrderManager.Application.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\bin\Debug\net8.0\PrintingOrderManager.Application.pdb
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\bin\Debug\net8.0\PrintingOrderManager.Core.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\bin\Debug\net8.0\PrintingOrderManager.Core.pdb
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\PrintingOrderManager.Application.csproj.AssemblyReference.cache
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\PrintingOrderManager.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\PrintingOrderManager.Application.AssemblyInfoInputs.cache
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\PrintingOrderManager.Application.AssemblyInfo.cs
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\PrintingOrderManager.Application.csproj.CoreCompileInputs.cache
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\Printing.B439A7C0.Up2Date
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\PrintingOrderManager.Application.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\refint\PrintingOrderManager.Application.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\PrintingOrderManager.Application.pdb
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\PrintingOrderManager.Application.genruntimeconfig.cache
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\ref\PrintingOrderManager.Application.dll

@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Добро пожаловать в PrintingOrderManager</h1>
+    <p>Система управления заказами на печать</p>
+</div>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>Сущности</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <a asp-controller="Clients" asp-action="Index" class="btn btn-primary btn-block">Клиенты</a>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <a asp-controller="Orders" asp-action="Index" class="btn btn-primary btn-block">Заказы</a>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <a asp-controller="OrderItems" asp-action="Index" class="btn btn-primary btn-block">Элементы заказа</a>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <a asp-controller="Payments" asp-action="Index" class="btn btn-primary btn-block">Платежи</a>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <a asp-controller="Services" asp-action="Index" class="btn btn-primary btn-block">Услуги</a>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <a asp-controller="Workers" asp-action="Index" class="btn btn-primary btn-block">Работники</a>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <a asp-controller="Equipment" asp-action="Index" class="btn btn-primary btn-block">Оборудование</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

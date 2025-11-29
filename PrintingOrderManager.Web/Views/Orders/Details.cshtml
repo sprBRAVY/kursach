@@ -1,0 +1,99 @@
+﻿@model PrintingOrderManager.Core.DTOs.OrderDto
+
+@{
+    ViewData["Title"] = "Детали заказа";
+}
+
+<h1>Детали</h1>
+
+<div>
+    <h4>Заказ</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OrderId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OrderId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ClientName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PlacementDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PlacementDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CompletionDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CompletionDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <h4>Элементы заказа</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Услуга</th>
+                <th>Работник</th>
+                <th>Оборудование</th>
+                <th>Количество</th>
+                <th>Стоимость</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderItems)
+            {
+                <tr>
+                    <td>@item.ServiceName</td>
+                    <td>@item.WorkerFullName</td>
+                    <td>@item.EquipmentName</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Cost</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h4>Платежи</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Сумма</th>
+                <th>Дата</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var payment in Model.Payments)
+            {
+                <tr>
+                    <td>@payment.Amount</td>
+                    <td>@payment.PaymentDate</td>
+                    <td>@payment.PaymentStatus</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.OrderId">Редактировать</a> |
+    <a asp-action="Index">Вернуться к списку</a>
+</div>

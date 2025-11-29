@@ -1,0 +1,105 @@
+﻿@model PrintingOrderManager.Web.Models.PaginatedList<PrintingOrderManager.Core.DTOs.OrderDto>
+
+@{
+    ViewData["Title"] = "Заказы";
+}
+
+<h1>Заказы</h1>
+
+<p>
+    <a asp-action="Create">Создать новый</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Поиск по имени клиента: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <label for="clientIdFilter">Клиент:</label>
+            <select name="clientIdFilter" id="clientIdFilter" class="form-control d-inline-block w-auto">
+                <option value="">Все клиенты</option>
+                @foreach (var client in ViewBag.Clients)
+                {
+                    <option value="@client.ClientId" selected="@(ViewBag.SelectedClientId?.ToString() == client.ClientId.ToString())">@client.ClientName</option>
+                }
+            </select>
+            <label for="statusFilter">Статус:</label>
+            <select name="statusFilter" id="statusFilter" class="form-control d-inline-block w-auto">
+                <option value="">Все статусы</option>
+                <option value="Новый" selected="@(ViewBag.SelectedStatus == "Новый")">Новый</option>
+                <option value="В процессе" selected="@(ViewBag.SelectedStatus == "В процессе")">В процессе</option>
+                <option value="Выполнен" selected="@(ViewBag.SelectedStatus == "Выполнен")">Выполнен</option>
+                <option value="Отменен" selected="@(ViewBag.SelectedStatus == "Отменен")">Отменен</option>
+            </select>
+            <input type="submit" value="Найти" class="btn btn-default" /> |
+            <a asp-action="Index">Вернуться к полному списку</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().PlacementDate)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ClientSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().ClientName)</a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().CompletionDate)
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["StatusSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().Status)</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlacementDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClientName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompletionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.OrderId">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@item.OrderId">Детали</a> |
+                    <a asp-action="Delete" asp-route-id="@item.OrderId">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-clientIdFilter="@ViewBag.SelectedClientId"
+   asp-route-statusFilter="@ViewBag.SelectedStatus"
+   class="btn btn-default @prevDisabled">
+    Назад
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-clientIdFilter="@ViewBag.SelectedClientId"
+   asp-route-statusFilter="@ViewBag.SelectedStatus"
+   class="btn btn-default @nextDisabled">
+    Вперед
+</a>

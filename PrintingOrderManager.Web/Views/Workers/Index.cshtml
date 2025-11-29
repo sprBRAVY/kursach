@@ -1,0 +1,89 @@
+﻿@model PrintingOrderManager.Web.Models.PaginatedList<PrintingOrderManager.Core.DTOs.WorkerDto>
+
+@{
+    ViewData["Title"] = "Работники";
+}
+
+<h1>Работники</h1>
+
+<p>
+    <a asp-action="Create">Создать нового</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Поиск по ФИО или контактам: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <label for="positionFilter">Должность:</label>
+            <select name="positionFilter" id="positionFilter" class="form-control d-inline-block w-auto">
+                <option value="">Все должности</option>
+                <option value="Менеджер" selected="@(ViewBag.SelectedPosition == "Менеджер")">Менеджер</option>
+                <option value="Дизайнер" selected="@(ViewBag.SelectedPosition == "Дизайнер")">Дизайнер</option>
+                <option value="Печатник" selected="@(ViewBag.SelectedPosition == "Печатник")">Печатник</option>
+                <option value="Программист" selected="@(ViewBag.SelectedPosition == "Программист")">Программист</option>
+            </select>
+            <input type="submit" value="Найти" class="btn btn-default" /> |
+            <a asp-action="Index">Вернуться к полному списку</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().WorkerFullName)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PositionSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().Position)</a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().Contacts)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WorkerFullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Position)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Contacts)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.WorkerId">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@item.WorkerId">Детали</a> |
+                    <a asp-action="Delete" asp-route-id="@item.WorkerId">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-positionFilter="@ViewBag.SelectedPosition"
+   class="btn btn-default @prevDisabled">
+    Назад
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-positionFilter="@ViewBag.SelectedPosition"
+   class="btn btn-default @nextDisabled">
+    Вперед
+</a>
