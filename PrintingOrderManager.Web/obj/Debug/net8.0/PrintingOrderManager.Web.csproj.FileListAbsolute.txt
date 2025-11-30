@@ -262,4 +262,11 @@ C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderM
 C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Web\obj\Debug\net8.0\PrintingOrderManager.Web.pdb
 C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Web\obj\Debug\net8.0\PrintingOrderManager.Web.genruntimeconfig.cache
 C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Web\obj\Debug\net8.0\ref\PrintingOrderManager.Web.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Web\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Web\bin\Debug\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Web\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Web\bin\Debug\net8.0\Microsoft.Extensions.WebEncoders.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Web\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Web\bin\Debug\net8.0\System.Security.Cryptography.Xml.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Web\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Web\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

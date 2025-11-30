@@ -1,32 +1,24 @@
+// PrintingOrderManager.Web/Controllers/HomeController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PrintingOrderManager.Web.Models;
-using System.Diagnostics;
 
 namespace PrintingOrderManager.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
         public IActionResult Index()
         {
+            // Главная страница для НЕ авторизованных: выбор входа или регистрации
             return View();
         }
 
-        public IActionResult Privacy()
+        [Authorize]
+        public IActionResult Dashboard()
         {
+            // Главная страница для авторизованных
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        public IActionResult AccessDenied() => View();
     }
 }

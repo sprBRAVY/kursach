@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrintingOrderManager.Core.Entities;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace PrintingOrderManager.Infrastructure.Data;
 
@@ -16,6 +14,7 @@ public partial class ApplicationDbContext : DbContext
     {
     }
 
+    // === Существующие DbSet ===
     public virtual DbSet<Client> Clients { get; set; } = null!;
     public virtual DbSet<Equipment> Equipment { get; set; } = null!;
     public virtual DbSet<Order> Orders { get; set; } = null!;
@@ -24,8 +23,8 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<Service> Services { get; set; } = null!;
     public virtual DbSet<Worker> Workers { get; set; } = null!;
 
-    // OnConfiguring НЕ используется, если параметры передаются через DI (из Program.cs)
-    // Строка подключения берётся из appsettings.json → ConnectionStrings:DefaultConnection
+    // === НОВАЯ СУЩНОСТЬ: пользователи для аутентификации ===
+    public virtual DbSet<User> Users { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -61,7 +60,7 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Client)
                 .WithMany(p => p.Orders)
                 .HasForeignKey(d => d.ClientId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade) // ← БЫЛО ClientSetNull
                 .HasConstraintName("FK_Orders_Clients");
         });
 
@@ -82,25 +81,25 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Order)
                 .WithMany(p => p.OrderItems)
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade) // ← БЫЛО ClientSetNull
                 .HasConstraintName("FK_OrderItems_Orders");
 
             entity.HasOne(d => d.Service)
                 .WithMany(p => p.OrderItems)
                 .HasForeignKey(d => d.ServiceId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade) // ← БЫЛО ClientSetNull
                 .HasConstraintName("FK_OrderItems_Services");
 
             entity.HasOne(d => d.Worker)
                 .WithMany(p => p.OrderItems)
                 .HasForeignKey(d => d.WorkerId)
-                .OnDelete(DeleteBehavior.SetNull)
+                .OnDelete(DeleteBehavior.Cascade) // ← БЫЛО SetNull
                 .HasConstraintName("FK_OrderItems_Workers");
 
             entity.HasOne(d => d.Equipment)
                 .WithMany(p => p.OrderItems)
                 .HasForeignKey(d => d.EquipmentId)
-                .OnDelete(DeleteBehavior.SetNull)
+                .OnDelete(DeleteBehavior.Cascade) // ← БЫЛО SetNull
                 .HasConstraintName("FK_OrderItems_Equipment");
         });
 
@@ -117,7 +116,7 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Order)
                 .WithMany(p => p.Payments)
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade) // ← БЫЛО ClientSetNull
                 .HasConstraintName("FK_Payments_Orders");
         });
 
@@ -140,6 +139,19 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.WorkerFullName).HasMaxLength(150).IsRequired();
             entity.Property(e => e.Position).HasMaxLength(100);
             entity.Property(e => e.Contacts).HasMaxLength(255);
+        });
+
+        // === НОВАЯ СУЩНОСТЬ: User ===
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(u => u.Id).HasName("PK_Users");
+
+            entity.Property(u => u.Id).HasColumnName("Id");
+            entity.Property(u => u.Email).HasMaxLength(255).IsRequired();
+            entity.Property(u => u.PasswordHash).IsRequired();
+            entity.Property(u => u.Role).HasMaxLength(20).IsRequired().HasDefaultValue("User");
+
+            entity.HasIndex(u => u.Email).IsUnique();
         });
 
         OnModelCreatingPartial(modelBuilder);

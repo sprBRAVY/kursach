@@ -7,7 +7,10 @@
 <h1>Платежи</h1>
 
 <p>
+    @if (User.IsInRole("Admin"))
+                    {
     <a asp-action="Create">Создать новый</a>
+                    }
 </p>
 
 <form asp-action="Index" method="get">
@@ -70,9 +73,13 @@
                     @Html.DisplayFor(modelItem => item.PaymentStatus)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.PaymentId">Редактировать</a> |
-                    <a asp-action="Details" asp-route-id="@item.PaymentId">Детали</a> |
-                    <a asp-action="Delete" asp-route-id="@item.PaymentId">Удалить</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.PaymentId">Редактировать</a> 
+                        
+                        <a asp-action="Delete" asp-route-id="@item.PaymentId">Удалить</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.PaymentId">Детали</a>
                 </td>
             </tr>
         }

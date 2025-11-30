@@ -7,7 +7,10 @@
 <h1>Оборудование</h1>
 
 <p>
-    <a asp-action="Create">Создать новое</a>
+     @if (User.IsInRole("Admin"))
+                     {
+        <a asp-action="Create" class="btn btn-sm btn-dark">Создать новое</a>
+                     }
 </p>
 
 <form asp-action="Index" method="get">
@@ -56,9 +59,12 @@
                     @Html.DisplayFor(modelItem => item.Specifications)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.EquipmentId">Редактировать</a> |
-                    <a asp-action="Details" asp-route-id="@item.EquipmentId">Детали</a> |
-                    <a asp-action="Delete" asp-route-id="@item.EquipmentId">Удалить</a>
+                    @if (User.IsInRole("Admin"))
+                     {
+                        <a asp-action="Edit" asp-route-id="@item.EquipmentId" class="btn btn-sm btn-warning">Редактировать</a>
+                        <a asp-action="Delete" asp-route-id="@item.EquipmentId" class="btn btn-sm btn-danger">Удалить</a>
+                     }
+                    <a asp-action="Details" asp-route-id="@item.EquipmentId" class="btn btn-sm btn-info">Детали</a>
                 </td>
             </tr>
         }

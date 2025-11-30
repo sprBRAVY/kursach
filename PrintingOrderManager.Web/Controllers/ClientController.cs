@@ -1,4 +1,5 @@
 ﻿// PrintingOrderManager.Web.Controllers/ClientsController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
@@ -68,7 +69,7 @@ namespace PrintingOrderManager.Web.Controllers
             if (client == null) return NotFound();
             return View(client);
         }
-
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -76,6 +77,7 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateClientDto clientDto) // ✅ Убран [Bind]
         {
             if (ModelState.IsValid)
@@ -85,7 +87,7 @@ namespace PrintingOrderManager.Web.Controllers
             }
             return View(clientDto);
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -102,6 +104,7 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, UpdateClientDto clientDto) // ✅ Убран [Bind]
         {
             if (id != clientDto.ClientId) return NotFound();
@@ -120,6 +123,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(clientDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -130,6 +134,8 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _clientService.DeleteClientAsync(id);

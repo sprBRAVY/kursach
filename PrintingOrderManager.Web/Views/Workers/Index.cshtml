@@ -7,7 +7,10 @@
 <h1>Работники</h1>
 
 <p>
+    @if(User.IsInRole("Admin"))
+                    {
     <a asp-action="Create">Создать нового</a>
+                    }
 </p>
 
 <form asp-action="Index" method="get">
@@ -57,9 +60,13 @@
                     @Html.DisplayFor(modelItem => item.Contacts)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.WorkerId">Редактировать</a> |
-                    <a asp-action="Details" asp-route-id="@item.WorkerId">Детали</a> |
+                    @if(User.IsInRole("Admin"))
+                    {
+                    <a asp-action="Edit" asp-route-id="@item.WorkerId">Редактировать</a> 
+                    
                     <a asp-action="Delete" asp-route-id="@item.WorkerId">Удалить</a>
+                                    }
+                    <a asp-action="Details" asp-route-id="@item.WorkerId">Детали</a>
                 </td>
             </tr>
         }

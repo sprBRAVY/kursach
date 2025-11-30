@@ -219,6 +219,40 @@ namespace PrintingOrderManager.Infrastructure.Migrations
                     b.ToTable("Services");
                 });
 
+            modelBuilder.Entity("PrintingOrderManager.Core.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("User");
+
+                    b.HasKey("Id")
+                        .HasName("PK_Users");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("PrintingOrderManager.Core.Entities.Worker", b =>
                 {
                     b.Property<int>("WorkerId")
@@ -252,6 +286,7 @@ namespace PrintingOrderManager.Infrastructure.Migrations
                     b.HasOne("PrintingOrderManager.Core.Entities.Client", "Client")
                         .WithMany("Orders")
                         .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Orders_Clients");
 
@@ -263,25 +298,27 @@ namespace PrintingOrderManager.Infrastructure.Migrations
                     b.HasOne("PrintingOrderManager.Core.Entities.Equipment", "Equipment")
                         .WithMany("OrderItems")
                         .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_OrderItems_Equipment");
 
                     b.HasOne("PrintingOrderManager.Core.Entities.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_OrderItems_Orders");
 
                     b.HasOne("PrintingOrderManager.Core.Entities.Service", "Service")
                         .WithMany("OrderItems")
                         .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_OrderItems_Services");
 
                     b.HasOne("PrintingOrderManager.Core.Entities.Worker", "Worker")
                         .WithMany("OrderItems")
                         .HasForeignKey("WorkerId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_OrderItems_Workers");
 
                     b.Navigation("Equipment");
@@ -298,6 +335,7 @@ namespace PrintingOrderManager.Infrastructure.Migrations
                     b.HasOne("PrintingOrderManager.Core.Entities.Order", "Order")
                         .WithMany("Payments")
                         .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Payments_Orders");
 
