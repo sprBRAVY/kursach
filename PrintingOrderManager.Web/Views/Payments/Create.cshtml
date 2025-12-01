@@ -5,48 +5,78 @@
 }
 
 <h1>Создать</h1>
-
 <h4>Платеж</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-6">
+        <form id="paymentForm" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="OrderId" class="control-label"></label>
-                <select asp-for="OrderId" class="form-control" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(ViewBag.Orders, "OrderId", "OrderId"))">
+            <div class="form-group mb-3">
+                <label asp-for="OrderId" class="form-label"></label>
+                <select asp-for="OrderId" class="form-select" asp-items="@(new SelectList(ViewBag.Orders, "OrderId", "OrderId"))">
                     <option value="">Выберите заказ</option>
                 </select>
                 <span asp-validation-for="OrderId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Amount" class="form-label"></label>
                 <input asp-for="Amount" class="form-control" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="PaymentDate" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="PaymentDate" class="form-label"></label>
                 <input asp-for="PaymentDate" class="form-control" type="date" />
                 <span asp-validation-for="PaymentDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="PaymentStatus" class="control-label"></label>
-                <input asp-for="PaymentStatus" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="PaymentStatus" class="form-label">Статус платежа</label>
+                <select asp-for="PaymentStatus" class="form-select">
+                    <option value="">Выберите статус</option>
+                    <option value="Ожидает">Ожидает</option>
+                    <option value="В обработке">В обработке</option>
+                    <option value="Оплачено">Оплачено</option>
+                    <option value="Отменен">Отменен</option>
+                </select>
                 <span asp-validation-for="PaymentStatus" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Создать" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Отмена</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Вернуться к списку</a>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        const formKey = 'PaymentForm';
+        const form = document.getElementById('paymentForm');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem(formKey);
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(name => {
+                    const input = form.querySelector(`[name="${name}"]`);
+                    if (input) input.value = data[name];
+                });
+            }
+        });
+
+        form?.addEventListener('input', (e) => {
+            const formData = new FormData(form);
+            const data = {};
+            for (let [name, value] of formData.entries()) {
+                data[name] = value;
+            }
+            localStorage.setItem(formKey, JSON.stringify(data));
+        });
+
+        form?.addEventListener('submit', () => {
+            localStorage.removeItem(formKey);
+        });
+    </script>
 }

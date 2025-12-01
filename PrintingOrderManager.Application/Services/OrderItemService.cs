@@ -72,8 +72,12 @@ namespace PrintingOrderManager.Application.Services
             {
                 var equipment = await _equipmentRepository.GetByIdAsync(orderItemDto.EquipmentId.Value);
                 if (equipment == null) throw new ArgumentException($"Equipment ID {orderItemDto.EquipmentId} not found.");
-            }
+            }      
+            var cost = await CalculateCostAsync(orderItemDto); // ← РАСЧЁТ
+
             var orderItem = _mapper.Map<OrderItem>(orderItemDto);
+            orderItem.Cost = cost; // ← УСТАНОВКА
+
             await _orderItemRepository.AddAsync(orderItem);
         }
 
@@ -83,8 +87,12 @@ namespace PrintingOrderManager.Application.Services
             var existing = await _orderItemRepository.GetByIdAsync(id);
             if (existing == null) throw new KeyNotFoundException($"OrderItem ID {id} not found.");
             // Валидация зависимостей...
+            var cost = await CalculateCostAsync(orderItemDto); // ← РАСЧЁТ
+
             _mapper.Map(orderItemDto, existing);
-            await _orderItemRepository.UpdateAsync(existing);
+            existing.Cost = cost; // ← ОБНОВЛЕНИЕ
+
+            await _orderItemRepository.UpdateAsync(existing);    
         }
 
         public async Task DeleteOrderItemAsync(int id)
@@ -102,6 +110,89 @@ namespace PrintingOrderManager.Application.Services
         {
             var items = await _orderItemRepository.GetByServiceIdAsync(serviceId);
             return _mapper.Map<IEnumerable<OrderItemDto>>(items);
+        }
+
+
+        public async Task UpdateOrderItemStatusAsync(int itemId, string newStatus)
+        {
+            var item = await _orderItemRepository.GetByIdAsync(itemId);
+            if (item == null)
+                throw new KeyNotFoundException($"OrderItem with ID {itemId} not found.");
+
+            item.Status = newStatus;
+            await _orderItemRepository.UpdateAsync(item);
+
+            // Автоматически обновить статус заказа
+            await UpdateOrderStatusAsync(item.OrderId);
+        }
+
+        private async Task UpdateOrderStatusAsync(int orderId)
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId);
+            var items = await _orderItemRepository.GetByOrderIdAsync(orderId);
+
+            if (items.All(i => i.Status == "Готово"))
+            {
+                order.Status = "Выполнен";
+                order.CompletionDate = DateOnly.FromDateTime(DateTime.Now);
+            }
+            else if (items.Any(i => i.Status == "В работе"))
+            {
+                order.Status = "В процессе";
+            }
+            // Иначе остаётся "Новый"
+
+            await _orderRepository.UpdateAsync(order);
+        }
+
+        private async Task<decimal> CalculateCostAsync(CreateOrderItemDto dto)
+        {
+            var service = await _serviceRepository.GetByIdAsync(dto.ServiceId);
+            if (service == null)
+                throw new ArgumentException($"Service with ID {dto.ServiceId} not found.");
+
+            decimal baseCost = service.UnitPrice * dto.Quantity;
+
+            // Наценка за бумагу
+            decimal paperCost = dto.Paper switch
+            {
+                "Глянцевая" => 5m,
+                "Матовая" => 4m,
+                _ => 3m // Обычная
+            };
+
+            // Наценка за цвет
+            decimal colorCost = dto.Color switch
+            {
+                "Цветная" => 2m,
+                _ => 0m // Черно-белая
+            };
+
+            return baseCost + (paperCost + colorCost) * dto.Quantity;
+        }
+
+        private async Task<decimal> CalculateCostAsync(UpdateOrderItemDto dto)
+        {
+            var service = await _serviceRepository.GetByIdAsync(dto.ServiceId);
+            if (service == null)
+                throw new ArgumentException($"Service with ID {dto.ServiceId} not found.");
+
+            decimal baseCost = service.UnitPrice * dto.Quantity;
+
+            decimal paperCost = dto.Paper switch
+            {
+                "Глянцевая" => 5m,
+                "Матовая" => 4m,
+                _ => 3m
+            };
+
+            decimal colorCost = dto.Color switch
+            {
+                "Цветная" => 2m,
+                _ => 0m
+            };
+
+            return baseCost + (paperCost + colorCost) * dto.Quantity;
         }
     }
 }

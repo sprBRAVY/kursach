@@ -6,106 +6,120 @@
 
 <h1>Платежи</h1>
 
-<p>
-    @if (User.IsInRole("Admin"))
-                    {
-    <a asp-action="Create">Создать новый</a>
-                    }
-</p>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Создать новый</a>
+    </p>
+}
 
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Поиск по сумме: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-            <label for="orderIdFilter">Заказ:</label>
-            <select name="orderIdFilter" id="orderIdFilter" class="form-control d-inline-block w-auto">
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-5">
+            <input type="text"
+                   name="SearchString"
+                   value="@ViewData["CurrentFilter"]"
+                   class="form-control"
+                   placeholder="Поиск по сумме..." />
+        </div>
+        <div class="col-md-3">
+            <select name="orderIdFilter" class="form-select">
                 <option value="">Все заказы</option>
                 @foreach (var order in ViewBag.Orders)
                 {
-                    <option value="@order.OrderId" selected="@(ViewBag.SelectedOrderId?.ToString() == order.OrderId.ToString())">Заказ #@order.OrderId (Клиент: @order.ClientName)</option>
+                    <option value="@order.OrderId" selected="@(ViewBag.SelectedOrderId?.ToString() == order.OrderId.ToString())">
+                        Заказ #@order.OrderId (Клиент: @order.ClientName)
+                    </option>
                 }
             </select>
-            <label for="statusFilter">Статус:</label>
-            <select name="statusFilter" id="statusFilter" class="form-control d-inline-block w-auto">
+        </div>
+        <div class="col-md-3">
+            <select name="statusFilter" class="form-select">
                 <option value="">Все статусы</option>
                 <option value="Оплачено" selected="@(ViewBag.SelectedStatus == "Оплачено")">Оплачено</option>
                 <option value="В обработке" selected="@(ViewBag.SelectedStatus == "В обработке")">В обработке</option>
                 <option value="Отменен" selected="@(ViewBag.SelectedStatus == "Отменен")">Отменен</option>
             </select>
-            <input type="submit" value="Найти" class="btn btn-default" /> |
-            <a asp-action="Index">Вернуться к полному списку</a>
-        </p>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-outline-primary">Найти</button>
+        </div>
     </div>
 </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().PaymentDate)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().OrderId)
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["AmountSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().Amount)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().PaymentStatus)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-dark">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PaymentDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Amount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PaymentStatus)
-                </td>
-                <td>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.PaymentId">Редактировать</a> 
-                        
-                        <a asp-action="Delete" asp-route-id="@item.PaymentId">Удалить</a>
-                    }
-                    <a asp-action="Details" asp-route-id="@item.PaymentId">Детали</a>
-                </td>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["DateSortParm"]"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-orderIdFilter="@ViewBag.SelectedOrderId"
+                       asp-route-statusFilter="@ViewBag.SelectedStatus">
+                        @Html.DisplayNameFor(model => model.First().PaymentDate)
+                    </a>
+                </th>
+                <th>@Html.DisplayNameFor(model => model.First().OrderId)</th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["AmountSortParm"]"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-orderIdFilter="@ViewBag.SelectedOrderId"
+                       asp-route-statusFilter="@ViewBag.SelectedStatus">
+                        @Html.DisplayNameFor(model => model.First().Amount)
+                    </a>
+                </th>
+                <th>@Html.DisplayNameFor(model => model.First().PaymentStatus)</th>
+                <th>Действия</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.OrderId)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PaymentStatus)</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.PaymentId" class="btn btn-sm btn-info">Детали</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.PaymentId" class="btn btn-sm btn-warning">Редактировать</a>
+                            <a asp-action="Delete" asp-route-id="@item.PaymentId" class="btn btn-sm btn-danger">Удалить</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   asp-route-orderIdFilter="@ViewBag.SelectedOrderId"
-   asp-route-statusFilter="@ViewBag.SelectedStatus"
-   class="btn btn-default @prevDisabled">
-    Назад
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   asp-route-orderIdFilter="@ViewBag.SelectedOrderId"
-   asp-route-statusFilter="@ViewBag.SelectedStatus"
-   class="btn btn-default @nextDisabled">
-    Вперед
-</a>
+<nav aria-label="Страницы">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @prevDisabled">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]"
+               asp-route-orderIdFilter="@ViewBag.SelectedOrderId"
+               asp-route-statusFilter="@ViewBag.SelectedStatus">Назад</a>
+        </li>
+        <li class="page-item @nextDisabled">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]"
+               asp-route-orderIdFilter="@ViewBag.SelectedOrderId"
+               asp-route-statusFilter="@ViewBag.SelectedStatus">Вперёд</a>
+        </li>
+    </ul>
+</nav>

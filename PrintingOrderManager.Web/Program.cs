@@ -36,6 +36,7 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IWorkerService, WorkerService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IReportingService, ReportingService>();
 
 // === AutoMapper — КАК В ПЕРВОМ РАБОЧЕМ ВАРИАНТЕ ===
 builder.Services.AddAutoMapper(cfg =>

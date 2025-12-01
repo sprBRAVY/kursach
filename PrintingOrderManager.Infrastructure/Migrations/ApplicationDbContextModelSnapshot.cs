@@ -139,6 +139,10 @@ namespace PrintingOrderManager.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasColumnName("ServiceID");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("WorkerId")
                         .HasColumnType("int")
                         .HasColumnName("WorkerID");

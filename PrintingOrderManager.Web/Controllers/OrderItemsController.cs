@@ -1,4 +1,5 @@
-﻿// PrintingOrderManager.Web/Controllers/OrderItemsController.cs
+﻿// PrintingOrderManager.Web.Controllers/OrderItemsController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
@@ -14,7 +15,12 @@ namespace PrintingOrderManager.Web.Controllers
         private readonly IWorkerService _workerService;
         private readonly IEquipmentService _equipmentService;
 
-        public OrderItemsController(IOrderItemService orderItemService, IOrderService orderService, IServiceService serviceService, IWorkerService workerService, IEquipmentService equipmentService)
+        public OrderItemsController(
+            IOrderItemService orderItemService,
+            IOrderService orderService,
+            IServiceService serviceService,
+            IWorkerService workerService,
+            IEquipmentService equipmentService)
         {
             _orderItemService = orderItemService;
             _orderService = orderService;
@@ -23,7 +29,13 @@ namespace PrintingOrderManager.Web.Controllers
             _equipmentService = equipmentService;
         }
 
-        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? orderIdFilter, int? serviceIdFilter, int? pageNumber)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? orderIdFilter,
+            int? serviceIdFilter,
+            int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["OrderSortParm"] = string.IsNullOrEmpty(sortOrder) ? "order_desc" : "";
@@ -41,7 +53,6 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            // ✅ ИЗМЕНЕНО
             var orderItems = _orderItemService.GetOrderItemsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -90,7 +101,6 @@ namespace PrintingOrderManager.Web.Controllers
             return View(await PaginatedList<OrderItemDto>.CreateAsync(orderItems, pageNumber ?? 1, pageSize));
         }
 
-        // ... остальные методы — БЕЗ ИЗМЕНЕНИЙ
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -99,6 +109,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(orderItem);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Orders = await _orderService.GetAllOrdersAsync();
@@ -110,7 +121,8 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderId,ServiceId,WorkerId,EquipmentId,Paper,Color,Quantity,Cost")] CreateOrderItemDto orderItemDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create(CreateOrderItemDto orderItemDto)
         {
             if (ModelState.IsValid)
             {
@@ -124,6 +136,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(orderItemDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -143,14 +156,15 @@ namespace PrintingOrderManager.Web.Controllers
                 Paper = orderItem.Paper,
                 Color = orderItem.Color,
                 Quantity = orderItem.Quantity,
-                Cost = orderItem.Cost
+                //Cost = orderItem.Cost
             };
             return View(updateDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ItemId,OrderId,ServiceId,WorkerId,EquipmentId,Paper,Color,Quantity,Cost")] UpdateOrderItemDto orderItemDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, UpdateOrderItemDto orderItemDto)
         {
             if (id != orderItemDto.ItemId) return NotFound();
             if (ModelState.IsValid)
@@ -172,6 +186,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(orderItemDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -182,10 +197,25 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _orderItemService.DeleteOrderItemAsync(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> StartWork(int id)
+        {
+            await _orderItemService.UpdateOrderItemStatusAsync(id, "В работе");
+            return RedirectToAction("Details", "Orders", new { id = Request.Query["orderId"] });
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CompleteWork(int id)
+        {
+            await _orderItemService.UpdateOrderItemStatusAsync(id, "Готово");
+            return RedirectToAction("Details", "Orders", new { id = Request.Query["orderId"] });
         }
     }
 }

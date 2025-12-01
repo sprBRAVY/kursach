@@ -1,4 +1,5 @@
 ﻿// PrintingOrderManager.Web/Controllers/WorkersController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
@@ -15,8 +16,12 @@ namespace PrintingOrderManager.Web.Controllers
             _workerService = workerService;
         }
 
-        // GET: Workers
-        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, string positionFilter, int? pageNumber)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            string positionFilter,
+            int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -33,13 +38,12 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            // ✅ ИСПРАВЛЕНО: используем IQueryable напрямую
             var workers = _workerService.GetWorkersQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 workers = workers.Where(w => w.WorkerFullName.Contains(searchString) ||
-                                            (w.Contacts != null && w.Contacts.Contains(searchString)));
+                                            (!string.IsNullOrEmpty(w.Contacts) && w.Contacts.Contains(searchString)));
             }
 
             if (!string.IsNullOrEmpty(positionFilter))
@@ -68,7 +72,6 @@ namespace PrintingOrderManager.Web.Controllers
             return View(await PaginatedList<WorkerDto>.CreateAsync(workers, pageNumber ?? 1, pageSize));
         }
 
-        // GET: Workers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -77,16 +80,13 @@ namespace PrintingOrderManager.Web.Controllers
             return View(worker);
         }
 
-        // GET: Workers/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        [Authorize(Roles = "Admin")]
+        public IActionResult Create() => View();
 
-        // POST: Workers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("WorkerFullName,Position,Contacts")] CreateWorkerDto workerDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create(CreateWorkerDto workerDto)
         {
             if (ModelState.IsValid)
             {
@@ -96,7 +96,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(workerDto);
         }
 
-        // GET: Workers/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -112,10 +112,10 @@ namespace PrintingOrderManager.Web.Controllers
             return View(updateDto);
         }
 
-        // POST: Workers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("WorkerId,WorkerFullName,Position,Contacts")] UpdateWorkerDto workerDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, UpdateWorkerDto workerDto)
         {
             if (id != workerDto.WorkerId) return NotFound();
             if (ModelState.IsValid)
@@ -133,7 +133,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(workerDto);
         }
 
-        // GET: Workers/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -142,13 +142,28 @@ namespace PrintingOrderManager.Web.Controllers
             return View(worker);
         }
 
-        // POST: Workers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _workerService.DeleteWorkerAsync(id);
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> DetailsWithItems(int id)
+        {
+            var worker = await _workerService.GetWorkerByIdAsync(id);
+            if (worker == null) return NotFound();
+
+            var orderItems = await _workerService.GetOrderItemsByWorkerIdAsync(id);
+
+            ViewBag.WorkerName = worker.WorkerFullName;
+            ViewBag.TotalItems = orderItems.Sum(x => x.Quantity);
+            ViewBag.TotalCost = orderItems.Sum(x => x.Cost);
+
+            return View(orderItems);
+        }
+
     }
 }

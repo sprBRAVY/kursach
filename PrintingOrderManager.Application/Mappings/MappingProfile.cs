@@ -27,18 +27,24 @@ namespace PrintingOrderManager.Application.Mappings
             // Маппинг Order
             CreateMap<Order, OrderDto>()
                 .ForMember(dest => dest.ClientName, opt => opt.MapFrom(src => src.Client.ClientName))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
                 .ForMember(dest => dest.Payments, opt => opt.MapFrom(src => src.Payments));
-            CreateMap<CreateOrderDto, Order>();
+            CreateMap<CreateOrderDto, Order>()
+                .ForMember(dest => dest.Status, opt => opt.Ignore());
             CreateMap<UpdateOrderDto, Order>().ReverseMap();
 
             // Маппинг OrderItem
             CreateMap<OrderItem, OrderItemDto>()
                 .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Service.ServiceName))
                 .ForMember(dest => dest.WorkerFullName, opt => opt.MapFrom(src => src.Worker != null ? src.Worker.WorkerFullName : null))
-                .ForMember(dest => dest.EquipmentName, opt => opt.MapFrom(src => src.Equipment != null ? src.Equipment.EquipmentName : null));
-            CreateMap<CreateOrderItemDto, OrderItem>();
-            CreateMap<UpdateOrderItemDto, OrderItem>().ReverseMap();
+                .ForMember(dest => dest.EquipmentName, opt => opt.MapFrom(src => src.Equipment != null ? src.Equipment.EquipmentName : null))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+            CreateMap<CreateOrderItemDto, OrderItem>()
+                .ForMember(dest => dest.Cost, opt => opt.Ignore()); // ← ИГНОРИРУЕМ
+
+            CreateMap<UpdateOrderItemDto, OrderItem>()
+                .ForMember(dest => dest.Cost, opt => opt.Ignore());
 
             // Маппинг Payment
             CreateMap<Payment, PaymentDto>();

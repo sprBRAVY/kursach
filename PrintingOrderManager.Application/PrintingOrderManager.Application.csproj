@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PrintingOrderManager.Core\PrintingOrderManager.Core.csproj" />
+    <ProjectReference Include="..\PrintingOrderManager.Infrastructure\PrintingOrderManager.Infrastructure.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

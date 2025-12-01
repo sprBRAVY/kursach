@@ -1,0 +1,15 @@
+﻿@{
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+}
+
+<ul class="navbar-nav">
+    @if (isAuthenticated)
+    {
+        <li class="nav-item">
+            <span class="nav-link text-dark">Привет, @User.Identity.Name!</span>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout">Выход</a>
+        </li>
+    }
+</ul>

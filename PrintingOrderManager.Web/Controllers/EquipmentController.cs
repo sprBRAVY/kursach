@@ -1,4 +1,5 @@
 ﻿// PrintingOrderManager.Web.Controllers/EquipmentController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
@@ -15,7 +16,12 @@ namespace PrintingOrderManager.Web.Controllers
             _equipmentService = equipmentService;
         }
 
-        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, string modelFilter, int? pageNumber)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            string modelFilter,
+            int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -32,7 +38,6 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            // ✅ ИСПОЛЬЗУЕМ IQueryable напрямую
             var equipment = _equipmentService.GetEquipmentQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -75,14 +80,13 @@ namespace PrintingOrderManager.Web.Controllers
             return View(equipment);
         }
 
-        public IActionResult Create()
-        {
-            return View();
-        }
+        [Authorize(Roles = "Admin")]
+        public IActionResult Create() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateEquipmentDto equipmentDto) // ✅ Убран [Bind]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create(CreateEquipmentDto equipmentDto)
         {
             if (ModelState.IsValid)
             {
@@ -92,6 +96,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(equipmentDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -109,7 +114,8 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, UpdateEquipmentDto equipmentDto) // ✅ Убран [Bind]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, UpdateEquipmentDto equipmentDto)
         {
             if (id != equipmentDto.EquipmentId) return NotFound();
             if (ModelState.IsValid)
@@ -127,6 +133,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(equipmentDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -137,10 +144,25 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _equipmentService.DeleteEquipmentAsync(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> DetailsWithItems(int id)
+        {
+            var equipment = await _equipmentService.GetEquipmentByIdAsync(id);
+            if (equipment == null) return NotFound();
+
+            var orderItems = await _equipmentService.GetOrderItemsByEquipmentIdAsync(id);
+
+            ViewBag.EquipmentName = equipment.EquipmentName;
+            ViewBag.TotalItems = orderItems.Sum(x => x.Quantity);
+            ViewBag.TotalCost = orderItems.Sum(x => x.Cost);
+
+            return View(orderItems);
         }
     }
 }

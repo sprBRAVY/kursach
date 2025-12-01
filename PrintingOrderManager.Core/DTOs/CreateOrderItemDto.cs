@@ -24,7 +24,7 @@ namespace PrintingOrderManager.Core.DTOs
         [Range(1, int.MaxValue, ErrorMessage = "Количество должно быть больше 0")]
         public int Quantity { get; set; }
 
-        [Range(0.01, double.MaxValue, ErrorMessage = "Стоимость должна быть больше 0")]
-        public decimal Cost { get; set; }
+        //[Range(0.01, double.MaxValue, ErrorMessage = "Стоимость должна быть больше 0")]
+        //public decimal Cost { get; set; }
     }
 }

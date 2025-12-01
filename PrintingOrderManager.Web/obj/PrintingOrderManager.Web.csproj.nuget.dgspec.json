@@ -34,6 +34,9 @@
             "projectReferences": {
               "C:\\Users\\Asus\\Desktop\\univer\\kurs3\\1 sem\\РПБДИС\\kursachCopy\\PrintingOrderManager\\PrintingOrderManager.Core\\PrintingOrderManager.Core.csproj": {
                 "projectPath": "C:\\Users\\Asus\\Desktop\\univer\\kurs3\\1 sem\\РПБДИС\\kursachCopy\\PrintingOrderManager\\PrintingOrderManager.Core\\PrintingOrderManager.Core.csproj"
+              },
+              "C:\\Users\\Asus\\Desktop\\univer\\kurs3\\1 sem\\РПБДИС\\kursachCopy\\PrintingOrderManager\\PrintingOrderManager.Infrastructure\\PrintingOrderManager.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\Asus\\Desktop\\univer\\kurs3\\1 sem\\РПБДИС\\kursachCopy\\PrintingOrderManager\\PrintingOrderManager.Infrastructure\\PrintingOrderManager.Infrastructure.csproj"
               }
             }
           }

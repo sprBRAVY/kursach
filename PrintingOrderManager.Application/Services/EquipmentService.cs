@@ -4,6 +4,7 @@ using AutoMapper.QueryableExtensions;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Core.Entities;
 using PrintingOrderManager.Core.Interfaces;
+using PrintingOrderManager.Infrastructure.Repositories;
 using System.Linq;
 
 namespace PrintingOrderManager.Application.Services
@@ -12,11 +13,13 @@ namespace PrintingOrderManager.Application.Services
     {
         private readonly IEquipmentRepository _equipmentRepository;
         private readonly IMapper _mapper;
+        private readonly IOrderItemRepository _orderItemRepository; 
 
-        public EquipmentService(IEquipmentRepository equipmentRepository, IMapper mapper)
+        public EquipmentService(IEquipmentRepository equipmentRepository, IMapper mapper, IOrderItemRepository orderItemRepository)
         {
             _equipmentRepository = equipmentRepository;
             _mapper = mapper;
+            _orderItemRepository = orderItemRepository;
         }
 
         public async Task<IEnumerable<EquipmentDto>> GetAllEquipmentAsync()
@@ -69,6 +72,12 @@ namespace PrintingOrderManager.Application.Services
             var filtered = equipment.FirstOrDefault(e => e.Model != null &&
                 e.Model.Contains(model, StringComparison.OrdinalIgnoreCase));
             return filtered == null ? null : _mapper.Map<EquipmentDto>(filtered);
+        }
+
+        public async Task<IEnumerable<OrderItemDto>> GetOrderItemsByEquipmentIdAsync(int equipmentId)
+        {
+            var orderItems = await _orderItemRepository.GetByEquipmentIdAsync(equipmentId);
+            return _mapper.Map<IEnumerable<OrderItemDto>>(orderItems);
         }
     }
 }

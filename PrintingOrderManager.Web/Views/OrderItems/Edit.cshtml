@@ -4,76 +4,134 @@
     ViewData["Title"] = "Редактировать элемент заказа";
 }
 
-<h1>Редактировать</h1>
+<style>
+    .edit-form-container {
+        min-height: calc(100vh - 120px);
+        display: flex;
+        align-items: center;
+    }
+</style>
 
-<h4>Элемент заказа</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ItemId" />
-            <div class="form-group">
-                <label asp-for="OrderId" class="control-label"></label>
-                <select asp-for="OrderId" class="form-control" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(ViewBag.Orders, "OrderId", "OrderId"))">
-                    <option value="">Выберите заказ</option>
-                </select>
-                <span asp-validation-for="OrderId" class="text-danger"></span>
+<div class="edit-form-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Редактировать элемент заказа</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="orderItemForm" asp-action="Edit">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="ItemId" />
+
+                            <div class="mb-3">
+                                <label asp-for="OrderId" class="form-label">Заказ</label>
+                                <select asp-for="OrderId" class="form-select" asp-items="@(new SelectList(ViewBag.Orders, "OrderId", "OrderId"))">
+                                    <option value="">Выберите заказ</option>
+                                </select>
+                                <span asp-validation-for="OrderId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ServiceId" class="form-label">Услуга</label>
+                                <select asp-for="ServiceId" class="form-select" asp-items="@(new SelectList(ViewBag.Services, "ServiceId", "ServiceName"))">
+                                    <option value="">Выберите услугу</option>
+                                </select>
+                                <span asp-validation-for="ServiceId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="WorkerId" class="form-label">Работник</label>
+                                <select asp-for="WorkerId" class="form-select" asp-items="@(new SelectList(ViewBag.Workers, "WorkerId", "WorkerFullName"))">
+                                    <option value="">Выберите работника</option>
+                                </select>
+                                <span asp-validation-for="WorkerId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="EquipmentId" class="form-label">Оборудование</label>
+                                <select asp-for="EquipmentId" class="form-select" asp-items="@(new SelectList(ViewBag.Equipment, "EquipmentId", "EquipmentName"))">
+                                    <option value="">Выберите оборудование</option>
+                                </select>
+                                <span asp-validation-for="EquipmentId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Paper" class="form-label">Бумага</label>
+                                <select asp-for="Paper" class="form-select">
+                                    <option value="">Выберите тип бумаги</option>
+                                    <option value="Глянцевая">Глянцевая</option>
+                                    <option value="Матовая">Матовая</option>
+                                    <option value="Обычная">Обычная</option>
+                                </select>
+                                <span asp-validation-for="Paper" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Color" class="form-label">Цвет</label>
+                                <select asp-for="Color" class="form-select">
+                                    <option value="">Выберите цветность</option>
+                                    <option value="Цветная">Цветная</option>
+                                    <option value="Черно-белая">Черно-белая</option>
+                                </select>
+                                <span asp-validation-for="Color" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Quantity" class="form-label">Количество</label>
+                                <input asp-for="Quantity" class="form-control" />
+                                <span asp-validation-for="Quantity" class="text-danger"></span>
+                            </div>
+
+                            @* <div class="mb-3">
+                                <label asp-for="Cost" class="form-label">Стоимость</label>
+                                <input asp-for="Cost" class="form-control" />
+                                <span asp-validation-for="Cost" class="text-danger"></span>
+                            </div> *@
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <input type="submit" value="Сохранить" class="btn btn-primary" />
+                                <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="ServiceId" class="control-label"></label>
-                <select asp-for="ServiceId" class="form-control" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(ViewBag.Services, "ServiceId", "ServiceName"))">
-                    <option value="">Выберите услугу</option>
-                </select>
-                <span asp-validation-for="ServiceId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WorkerId" class="control-label"></label>
-                <select asp-for="WorkerId" class="form-control" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(ViewBag.Workers, "WorkerId", "WorkerFullName"))">
-                    <option value="">Выберите работника</option>
-                </select>
-                <span asp-validation-for="WorkerId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EquipmentId" class="control-label"></label>
-                <select asp-for="EquipmentId" class="form-control" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(ViewBag.Equipment, "EquipmentId", "EquipmentName"))">
-                    <option value="">Выберите оборудование</option>
-                </select>
-                <span asp-validation-for="EquipmentId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Paper" class="control-label"></label>
-                <input asp-for="Paper" class="form-control" />
-                <span asp-validation-for="Paper" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Color" class="control-label"></label>
-                <input asp-for="Color" class="form-control" />
-                <span asp-validation-for="Color" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Cost" class="control-label"></label>
-                <input asp-for="Cost" class="form-control" />
-                <span asp-validation-for="Cost" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Сохранить" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Вернуться к списку</a>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        const formKey = 'OrderItemForm';
+        const form = document.getElementById('orderItemForm');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem(formKey);
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(name => {
+                    const input = form.querySelector(`[name="${name}"]`);
+                    if (input) input.value = data[name];
+                });
+            }
+        });
+
+        form?.addEventListener('input', (e) => {
+            const formData = new FormData(form);
+            const data = {};
+            for (let [name, value] of formData.entries()) {
+                data[name] = value;
+            }
+            localStorage.setItem(formKey, JSON.stringify(data));
+        });
+
+        form?.addEventListener('submit', () => {
+            localStorage.removeItem(formKey);
+        });
+    </script>
 }

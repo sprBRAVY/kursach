@@ -1,4 +1,5 @@
 ﻿// PrintingOrderManager.Web/Controllers/ServicesController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
@@ -15,7 +16,13 @@ namespace PrintingOrderManager.Web.Controllers
             _serviceService = serviceService;
         }
 
-        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, decimal? minPriceFilter, decimal? maxPriceFilter, int? pageNumber)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            decimal? minPriceFilter,
+            decimal? maxPriceFilter,
+            int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -32,7 +39,6 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            // ✅ ИЗМЕНЕНО
             var services = _serviceService.GetServicesQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -73,7 +79,6 @@ namespace PrintingOrderManager.Web.Controllers
             return View(await PaginatedList<ServiceDto>.CreateAsync(services, pageNumber ?? 1, pageSize));
         }
 
-        // ... остальные методы — БЕЗ ИЗМЕНЕНИЙ
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -82,14 +87,13 @@ namespace PrintingOrderManager.Web.Controllers
             return View(service);
         }
 
-        public IActionResult Create()
-        {
-            return View();
-        }
+        [Authorize(Roles = "Admin")]
+        public IActionResult Create() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ServiceName,Description,UnitPrice")] CreateServiceDto serviceDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create(CreateServiceDto serviceDto)
         {
             if (ModelState.IsValid)
             {
@@ -99,6 +103,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(serviceDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -116,7 +121,8 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ServiceId,ServiceName,Description,UnitPrice")] UpdateServiceDto serviceDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, UpdateServiceDto serviceDto)
         {
             if (id != serviceDto.ServiceId) return NotFound();
             if (ModelState.IsValid)
@@ -134,6 +140,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(serviceDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -144,6 +151,7 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _serviceService.DeleteServiceAsync(id);

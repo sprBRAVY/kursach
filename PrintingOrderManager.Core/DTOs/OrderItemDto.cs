@@ -20,5 +20,6 @@ namespace PrintingOrderManager.Core.DTOs
         public string? Color { get; set; }
         public int Quantity { get; set; }
         public decimal Cost { get; set; }
+        public string Status { get; set; } = "Ожидает";
     }
 }

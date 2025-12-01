@@ -6,89 +6,105 @@
 
 <h1>Оборудование</h1>
 
-<p>
-     @if (User.IsInRole("Admin"))
-                     {
-        <a asp-action="Create" class="btn btn-sm btn-dark">Создать новое</a>
-                     }
-</p>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Создать новое</a>
+    </p>
+}
 
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Поиск по названию или спецификациям: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-            <label for="modelFilter">Модель:</label>
-            <select name="modelFilter" id="modelFilter" class="form-control d-inline-block w-auto">
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-6">
+            <input type="text"
+                   name="SearchString"
+                   value="@ViewData["CurrentFilter"]"
+                   class="form-control"
+                   placeholder="Поиск по названию или спецификациям..." />
+        </div>
+        <div class="col-md-3">
+            <select name="modelFilter" class="form-select">
                 <option value="">Все модели</option>
                 <option value="HP LaserJet" selected="@(ViewBag.SelectedModel == "HP LaserJet")">HP LaserJet</option>
                 <option value="Canon imageRUNNER" selected="@(ViewBag.SelectedModel == "Canon imageRUNNER")">Canon imageRUNNER</option>
                 <option value="Xerox WorkCentre" selected="@(ViewBag.SelectedModel == "Xerox WorkCentre")">Xerox WorkCentre</option>
             </select>
-            <input type="submit" value="Найти" class="btn btn-default" /> |
-            <a asp-action="Index">Вернуться к полному списку</a>
-        </p>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-outline-primary">Найти</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Сбросить</a>
+        </div>
     </div>
 </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().EquipmentName)</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["ModelSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">@Html.DisplayNameFor(model => model.First().Model)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Specifications)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-dark">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EquipmentName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Model)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Specifications)
-                </td>
-                <td>
-                    @if (User.IsInRole("Admin"))
-                     {
-                        <a asp-action="Edit" asp-route-id="@item.EquipmentId" class="btn btn-sm btn-warning">Редактировать</a>
-                        <a asp-action="Delete" asp-route-id="@item.EquipmentId" class="btn btn-sm btn-danger">Удалить</a>
-                     }
-                    <a asp-action="Details" asp-route-id="@item.EquipmentId" class="btn btn-sm btn-info">Детали</a>
-                </td>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["NameSortParm"]"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-modelFilter="@ViewBag.SelectedModel">
+                        @Html.DisplayNameFor(model => model.First().EquipmentName)
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["ModelSortParm"]"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-modelFilter="@ViewBag.SelectedModel">
+                        @Html.DisplayNameFor(model => model.First().Model)
+                    </a>
+                </th>
+                <th>@Html.DisplayNameFor(model => model.First().Specifications)</th>
+                <th>Действия</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.EquipmentName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Model)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Specifications)</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.EquipmentId" class="btn btn-sm btn-info">Детали</a>
+                        <a asp-action="DetailsWithItems" asp-route-id="@item.EquipmentId" class="btn btn-sm btn-info">Подробно</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.EquipmentId" class="btn btn-sm btn-warning">Редактировать</a>
+                            <a asp-action="Delete" asp-route-id="@item.EquipmentId" class="btn btn-sm btn-danger">Удалить</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   asp-route-modelFilter="@ViewBag.SelectedModel"
-   class="btn btn-default @prevDisabled">
-    Назад
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   asp-route-modelFilter="@ViewBag.SelectedModel"
-   class="btn btn-default @nextDisabled">
-    Вперед
-</a>
+<nav aria-label="Страницы">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @prevDisabled">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]"
+               asp-route-modelFilter="@ViewBag.SelectedModel">Назад</a>
+        </li>
+        <li class="page-item @nextDisabled">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]"
+               asp-route-modelFilter="@ViewBag.SelectedModel">Вперёд</a>
+        </li>
+    </ul>
+</nav>

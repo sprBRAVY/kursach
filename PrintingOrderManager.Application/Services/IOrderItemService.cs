@@ -14,5 +14,6 @@ namespace PrintingOrderManager.Application.Services
         Task DeleteOrderItemAsync(int id);
         Task<IEnumerable<OrderItemDto>> GetOrderItemsByOrderIdAsync(int orderId);
         Task<IEnumerable<OrderItemDto>> GetOrderItemsByServiceIdAsync(int serviceId);
+        Task UpdateOrderItemStatusAsync(int itemId, string newStatus);
     }
 }

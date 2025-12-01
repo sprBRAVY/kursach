@@ -2172,7 +2172,8 @@
           "Microsoft.EntityFrameworkCore": "8.0.10",
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.10",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "9.0.0",
-          "PrintingOrderManager.Core": "1.0.0"
+          "PrintingOrderManager.Core": "1.0.0",
+          "PrintingOrderManager.Infrastructure": "1.0.0"
         },
         "runtime": {
           "PrintingOrderManager.Application.dll": {

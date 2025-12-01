@@ -14,5 +14,6 @@ namespace PrintingOrderManager.Application.Services
         Task DeleteEquipmentAsync(int id);
         Task<EquipmentDto?> GetEquipmentByNameAsync(string name);
         Task<EquipmentDto?> GetEquipmentByModelAsync(string model);
+        Task<IEnumerable<OrderItemDto>> GetOrderItemsByEquipmentIdAsync(int equipmentId);
     }
 }

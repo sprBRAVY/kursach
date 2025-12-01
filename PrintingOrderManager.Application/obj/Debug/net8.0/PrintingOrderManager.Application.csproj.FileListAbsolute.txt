@@ -15,3 +15,5 @@ C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderM
 C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\PrintingOrderManager.Application.pdb
 C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\PrintingOrderManager.Application.genruntimeconfig.cache
 C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\obj\Debug\net8.0\ref\PrintingOrderManager.Application.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\bin\Debug\net8.0\PrintingOrderManager.Infrastructure.dll
+C:\Users\Asus\Desktop\univer\kurs3\1 sem\РПБДИС\kursachCopy\PrintingOrderManager\PrintingOrderManager.Application\bin\Debug\net8.0\PrintingOrderManager.Infrastructure.pdb

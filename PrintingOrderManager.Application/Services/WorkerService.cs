@@ -4,6 +4,7 @@ using AutoMapper.QueryableExtensions;
 using PrintingOrderManager.Core.DTOs;
 using PrintingOrderManager.Core.Entities;
 using PrintingOrderManager.Core.Interfaces;
+
 using System.Linq;
 
 namespace PrintingOrderManager.Application.Services
@@ -12,11 +13,13 @@ namespace PrintingOrderManager.Application.Services
     {
         private readonly IWorkerRepository _workerRepository;
         private readonly IMapper _mapper;
+        private readonly IOrderItemRepository _orderItemRepository;
 
-        public WorkerService(IWorkerRepository workerRepository, IMapper mapper)
+        public WorkerService(IWorkerRepository workerRepository, IMapper mapper, IOrderItemRepository orderItemRepository)
         {
             _workerRepository = workerRepository;
             _mapper = mapper;
+            _orderItemRepository = orderItemRepository;
         }
 
         public async Task<IEnumerable<WorkerDto>> GetAllWorkersAsync()
@@ -67,6 +70,12 @@ namespace PrintingOrderManager.Application.Services
         {
             var workers = await _workerRepository.GetByPositionAsync(position);
             return _mapper.Map<IEnumerable<WorkerDto>>(workers);
+        }
+
+        public async Task<IEnumerable<OrderItemDto>> GetOrderItemsByWorkerIdAsync(int workerId)
+        {
+            var orderItems = await _orderItemRepository.GetByWorkerIdAsync(workerId);
+            return _mapper.Map<IEnumerable<OrderItemDto>>(orderItems);
         }
     }
 }

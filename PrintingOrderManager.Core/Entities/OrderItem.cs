@@ -23,6 +23,8 @@ public partial class OrderItem
 
     public decimal Cost { get; set; }
 
+    public string Status { get; set; } = "Ожидает";
+
     public virtual Equipment? Equipment { get; set; }
 
     public virtual Order Order { get; set; } = null!;

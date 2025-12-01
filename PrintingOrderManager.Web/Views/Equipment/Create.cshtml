@@ -5,41 +5,65 @@
 }
 
 <h1>Создать</h1>
-
 <h4>Оборудование</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-6">
+        <form id="equipmentForm" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="EquipmentName" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="EquipmentName" class="form-label"></label>
                 <input asp-for="EquipmentName" class="form-control" />
                 <span asp-validation-for="EquipmentName" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Model" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Model" class="form-label"></label>
                 <input asp-for="Model" class="form-control" />
                 <span asp-validation-for="Model" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Specifications" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Specifications" class="form-label"></label>
                 <input asp-for="Specifications" class="form-control" />
                 <span asp-validation-for="Specifications" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Создать" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Отмена</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Вернуться к списку</a>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        const formKey = 'EquipmentForm';
+        const form = document.getElementById('equipmentForm');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem(formKey);
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(name => {
+                    const input = form.querySelector(`[name="${name}"]`);
+                    if (input) input.value = data[name];
+                });
+            }
+        });
+
+        form?.addEventListener('input', (e) => {
+            const formData = new FormData(form);
+            const data = {};
+            for (let [name, value] of formData.entries()) {
+                data[name] = value;
+            }
+            localStorage.setItem(formKey, JSON.stringify(data));
+        });
+
+        form?.addEventListener('submit', () => {
+            localStorage.removeItem(formKey);
+        });
+    </script>
 }

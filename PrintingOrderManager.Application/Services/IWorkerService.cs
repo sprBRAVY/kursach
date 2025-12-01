@@ -14,5 +14,6 @@ namespace PrintingOrderManager.Application.Services
         Task DeleteWorkerAsync(int id);
         Task<WorkerDto?> GetWorkerByNameAsync(string name);
         Task<IEnumerable<WorkerDto>> GetWorkersByPositionAsync(string position);
+        Task<IEnumerable<OrderItemDto>> GetOrderItemsByWorkerIdAsync(int workerId);
     }
 }

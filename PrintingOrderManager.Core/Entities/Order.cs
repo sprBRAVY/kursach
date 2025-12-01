@@ -13,7 +13,7 @@ public partial class Order
 
     public DateOnly? CompletionDate { get; set; }
 
-    public string? Status { get; set; }
+    public string? Status { get; set; } = "Новый";
 
     public virtual Client Client { get; set; } = null!;
 

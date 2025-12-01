@@ -1,4 +1,5 @@
-﻿// PrintingOrderManager.Web/Controllers/PaymentsController.cs
+﻿// PrintingOrderManager.Web.Controllers/PaymentsController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
@@ -17,7 +18,13 @@ namespace PrintingOrderManager.Web.Controllers
             _orderService = orderService;
         }
 
-        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? orderIdFilter, string statusFilter, int? pageNumber)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? orderIdFilter,
+            string statusFilter,
+            int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["DateSortParm"] = string.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
@@ -34,7 +41,6 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            // ✅ ИЗМЕНЕНО
             var payments = _paymentService.GetPaymentsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -76,7 +82,6 @@ namespace PrintingOrderManager.Web.Controllers
             return View(await PaginatedList<PaymentDto>.CreateAsync(payments, pageNumber ?? 1, pageSize));
         }
 
-        // ... остальные методы — БЕЗ ИЗМЕНЕНИЙ
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -85,6 +90,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(payment);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Orders = await _orderService.GetAllOrdersAsync();
@@ -93,7 +99,8 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderId,Amount,PaymentDate,PaymentStatus")] CreatePaymentDto paymentDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create(CreatePaymentDto paymentDto)
         {
             if (ModelState.IsValid)
             {
@@ -104,6 +111,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(paymentDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -123,7 +131,8 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PaymentId,OrderId,Amount,PaymentDate,PaymentStatus")] UpdatePaymentDto paymentDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, UpdatePaymentDto paymentDto)
         {
             if (id != paymentDto.PaymentId) return NotFound();
             if (ModelState.IsValid)
@@ -142,6 +151,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(paymentDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -152,6 +162,7 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _paymentService.DeletePaymentAsync(id);

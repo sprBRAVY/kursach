@@ -16,7 +16,11 @@ namespace PrintingOrderManager.Web.Controllers
             _clientService = clientService;
         }
 
-        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -33,7 +37,6 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            // ✅ ИСПОЛЬЗУЕМ IQueryable напрямую (без AsQueryable() и GetAllAsync)
             var clients = _clientService.GetClientsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -69,16 +72,14 @@ namespace PrintingOrderManager.Web.Controllers
             if (client == null) return NotFound();
             return View(client);
         }
+
         [Authorize(Roles = "Admin")]
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(CreateClientDto clientDto) // ✅ Убран [Bind]
+        public async Task<IActionResult> Create(CreateClientDto clientDto)
         {
             if (ModelState.IsValid)
             {
@@ -87,6 +88,7 @@ namespace PrintingOrderManager.Web.Controllers
             }
             return View(clientDto);
         }
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -105,7 +107,7 @@ namespace PrintingOrderManager.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, UpdateClientDto clientDto) // ✅ Убран [Bind]
+        public async Task<IActionResult> Edit(int id, UpdateClientDto clientDto)
         {
             if (id != clientDto.ClientId) return NotFound();
             if (ModelState.IsValid)
@@ -134,7 +136,6 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

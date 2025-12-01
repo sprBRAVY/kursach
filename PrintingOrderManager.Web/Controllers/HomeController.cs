@@ -8,17 +8,21 @@ namespace PrintingOrderManager.Web.Controllers
     {
         public IActionResult Index()
         {
-            // Главная страница для НЕ авторизованных: выбор входа или регистрации
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Dashboard");
+            }
             return View();
         }
 
         [Authorize]
-        public IActionResult Dashboard()
-        {
-            // Главная страница для авторизованных
-            return View();
-        }
+        public IActionResult Dashboard() => View();
+
+        [Authorize]
+        public IActionResult Profile() => View();
 
         public IActionResult AccessDenied() => View();
+
+        public IActionResult Privacy() => View();
     }
 }

@@ -18,7 +18,7 @@ namespace PrintingOrderManager.Core.DTOs
         [Required(ErrorMessage = "Дата размещения обязательна")]
         public DateOnly PlacementDate { get; set; }
 
-        public DateOnly? CompletionDate { get; set; }
-        public string? Status { get; set; }
+       //public DateOnly? CompletionDate { get; set; }
+        //public string? Status { get; set; }
     }
 }

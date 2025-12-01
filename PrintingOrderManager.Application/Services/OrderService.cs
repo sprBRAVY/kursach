@@ -38,7 +38,16 @@ namespace PrintingOrderManager.Application.Services
         public async Task<OrderDto> GetOrderByIdAsync(int id)
         {
             var order = await _orderRepository.GetByIdWithDetailsAsync(id);
-            return order == null ? null : _mapper.Map<OrderDto>(order);
+            if (order == null) return null;
+
+            var dto = _mapper.Map<OrderDto>(order);
+
+            // Расчёт итогов
+            dto.TotalCost = order.OrderItems.Sum(oi => oi.Cost);
+            dto.PaidAmount = order.Payments.Where(p => p.PaymentStatus == "Оплачено").Sum(p => p.Amount);
+            dto.IsPaid = dto.PaidAmount >= dto.TotalCost;
+
+            return dto;
         }
 
         public async Task AddOrderAsync(CreateOrderDto orderDto)
@@ -46,7 +55,9 @@ namespace PrintingOrderManager.Application.Services
             var client = await _clientRepository.GetByIdAsync(orderDto.ClientId);
             if (client == null)
                 throw new ArgumentException($"Client with ID {orderDto.ClientId} not found.");
+
             var order = _mapper.Map<Order>(orderDto);
+            order.Status = "Новый"; // ← ЯВНО УСТАНАВЛИВАЕМ СТАТУС ПРИ СОЗДАНИИ
             await _orderRepository.AddAsync(order);
         }
 

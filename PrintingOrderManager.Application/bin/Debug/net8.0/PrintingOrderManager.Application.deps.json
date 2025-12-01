@@ -14,7 +14,8 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.10",
           "Microsoft.EntityFrameworkCore.Tools": "8.0.10",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "9.0.0",
-          "PrintingOrderManager.Core": "1.0.0"
+          "PrintingOrderManager.Core": "1.0.0",
+          "PrintingOrderManager.Infrastructure": "1.0.0"
         },
         "runtime": {
           "PrintingOrderManager.Application.dll": {}
@@ -2051,6 +2052,21 @@
             "fileVersion": "1.0.0.0"
           }
         }
+      },
+      "PrintingOrderManager.Infrastructure/1.0.0": {
+        "dependencies": {
+          "AutoMapper": "15.1.0",
+          "Microsoft.EntityFrameworkCore": "8.0.10",
+          "Microsoft.EntityFrameworkCore.SqlServer": "8.0.10",
+          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "9.0.0",
+          "PrintingOrderManager.Core": "1.0.0"
+        },
+        "runtime": {
+          "PrintingOrderManager.Infrastructure.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
@@ -3125,6 +3141,11 @@
       "hashPath": "system.threading.tasks.extensions.4.5.4.nupkg.sha512"
     },
     "PrintingOrderManager.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "PrintingOrderManager.Infrastructure/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

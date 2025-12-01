@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Мой профиль";
+}
+
+<div class="text-center mt-5">
+    <h1 class="display-4">Мой профиль</h1>
+    <p>Данные пользователя:</p>
+
+    <div class="card mx-auto" style="max-width: 400px;">
+        <div class="card-body">
+            <p><strong>Email:</strong> @User.Identity.Name</p>
+            <p>
+                <strong>Роль:</strong>
+                @if (User.IsInRole("Admin"))
+                {
+                    <span class="badge bg-danger">Администратор</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Пользователь</span>
+                }
+            </p>
+            <a asp-controller="Account" asp-action="Logout" class="btn btn-danger w-100">Выйти</a>
+        </div>
+    </div>
+</div>

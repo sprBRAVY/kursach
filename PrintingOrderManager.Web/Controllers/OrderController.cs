@@ -1,4 +1,5 @@
-﻿// PrintingOrderManager.Web/Controllers/OrdersController.cs
+﻿// PrintingOrderManager.Web.Controllers/OrdersController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintingOrderManager.Application.Services;
 using PrintingOrderManager.Core.DTOs;
@@ -17,7 +18,13 @@ namespace PrintingOrderManager.Web.Controllers
             _clientService = clientService;
         }
 
-        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? clientIdFilter, string statusFilter, int? pageNumber)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? clientIdFilter,
+            string statusFilter,
+            int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["DateSortParm"] = string.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
@@ -35,7 +42,6 @@ namespace PrintingOrderManager.Web.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            // ✅ ИЗМЕНЕНО
             var orders = _orderService.GetOrdersQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -83,7 +89,6 @@ namespace PrintingOrderManager.Web.Controllers
             return View(await PaginatedList<OrderDto>.CreateAsync(orders, pageNumber ?? 1, pageSize));
         }
 
-        // ... остальные методы — БЕЗ ИЗМЕНЕНИЙ
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -92,6 +97,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(order);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Clients = await _clientService.GetAllClientsAsync();
@@ -100,7 +106,8 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClientId,PlacementDate,CompletionDate,Status")] CreateOrderDto orderDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create(CreateOrderDto orderDto)
         {
             if (ModelState.IsValid)
             {
@@ -111,6 +118,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(orderDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -122,15 +130,16 @@ namespace PrintingOrderManager.Web.Controllers
                 OrderId = order.OrderId,
                 ClientId = order.ClientId,
                 PlacementDate = order.PlacementDate,
-                CompletionDate = order.CompletionDate,
-                Status = order.Status
+               // CompletionDate = order.CompletionDate,
+                //Status = order.Status
             };
             return View(updateDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,ClientId,PlacementDate,CompletionDate,Status")] UpdateOrderDto orderDto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, UpdateOrderDto orderDto)
         {
             if (id != orderDto.OrderId) return NotFound();
             if (ModelState.IsValid)
@@ -149,6 +158,7 @@ namespace PrintingOrderManager.Web.Controllers
             return View(orderDto);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -159,6 +169,7 @@ namespace PrintingOrderManager.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _orderService.DeleteOrderAsync(id);

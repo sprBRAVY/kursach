@@ -5,48 +5,72 @@
 }
 
 <h1>Создать</h1>
-
 <h4>Заказ</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-6">
+        <form id="orderForm" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ClientId" class="control-label"></label>
-                <select asp-for="ClientId" class="form-control" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(ViewBag.Clients, "ClientId", "ClientName"))">
+            <div class="form-group mb-3">
+                <label asp-for="ClientId" class="form-label"></label>
+                <select asp-for="ClientId" class="form-select" asp-items="@(new SelectList(ViewBag.Clients, "ClientId", "ClientName"))">
                     <option value="">Выберите клиента</option>
                 </select>
                 <span asp-validation-for="ClientId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="PlacementDate" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="PlacementDate" class="form-label"></label>
                 <input asp-for="PlacementDate" class="form-control" type="date" />
                 <span asp-validation-for="PlacementDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CompletionDate" class="control-label"></label>
+            @* <div class="form-group mb-3">
+                <label asp-for="CompletionDate" class="form-label"></label>
                 <input asp-for="CompletionDate" class="form-control" type="date" />
                 <span asp-validation-for="CompletionDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Status" class="form-label"></label>
                 <input asp-for="Status" class="form-control" />
                 <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="form-group">
                 <input type="submit" value="Создать" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Отмена</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Вернуться к списку</a>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        const formKey = 'OrderForm';
+        const form = document.getElementById('orderForm');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem(formKey);
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(name => {
+                    const input = form.querySelector(`[name="${name}"]`);
+                    if (input) input.value = data[name];
+                });
+            }
+        });
+
+        form?.addEventListener('input', (e) => {
+            const formData = new FormData(form);
+            const data = {};
+            for (let [name, value] of formData.entries()) {
+                data[name] = value;
+            }
+            localStorage.setItem(formKey, JSON.stringify(data));
+        });
+
+        form?.addEventListener('submit', () => {
+            localStorage.removeItem(formKey);
+        });
+    </script>
 }

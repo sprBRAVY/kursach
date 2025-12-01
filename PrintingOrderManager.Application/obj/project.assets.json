@@ -2764,6 +2764,23 @@
         "runtime": {
           "bin/placeholder/PrintingOrderManager.Core.dll": {}
         }
+      },
+      "PrintingOrderManager.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "AutoMapper": "15.1.0",
+          "Microsoft.EntityFrameworkCore": "8.0.10",
+          "Microsoft.EntityFrameworkCore.SqlServer": "8.0.10",
+          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "9.0.0",
+          "PrintingOrderManager.Core": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/PrintingOrderManager.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PrintingOrderManager.Infrastructure.dll": {}
+        }
       }
     }
   },
@@ -7416,6 +7433,11 @@
       "type": "project",
       "path": "../PrintingOrderManager.Core/PrintingOrderManager.Core.csproj",
       "msbuildProject": "../PrintingOrderManager.Core/PrintingOrderManager.Core.csproj"
+    },
+    "PrintingOrderManager.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../PrintingOrderManager.Infrastructure/PrintingOrderManager.Infrastructure.csproj",
+      "msbuildProject": "../PrintingOrderManager.Infrastructure/PrintingOrderManager.Infrastructure.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -7426,7 +7448,8 @@
       "Microsoft.EntityFrameworkCore.SqlServer >= 8.0.10",
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.10",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 9.0.0",
-      "PrintingOrderManager.Core >= 1.0.0"
+      "PrintingOrderManager.Core >= 1.0.0",
+      "PrintingOrderManager.Infrastructure >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -7463,6 +7486,9 @@
           "projectReferences": {
             "C:\\Users\\Asus\\Desktop\\univer\\kurs3\\1 sem\\РПБДИС\\kursachCopy\\PrintingOrderManager\\PrintingOrderManager.Core\\PrintingOrderManager.Core.csproj": {
               "projectPath": "C:\\Users\\Asus\\Desktop\\univer\\kurs3\\1 sem\\РПБДИС\\kursachCopy\\PrintingOrderManager\\PrintingOrderManager.Core\\PrintingOrderManager.Core.csproj"
+            },
+            "C:\\Users\\Asus\\Desktop\\univer\\kurs3\\1 sem\\РПБДИС\\kursachCopy\\PrintingOrderManager\\PrintingOrderManager.Infrastructure\\PrintingOrderManager.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\Asus\\Desktop\\univer\\kurs3\\1 sem\\РПБДИС\\kursachCopy\\PrintingOrderManager\\PrintingOrderManager.Infrastructure\\PrintingOrderManager.Infrastructure.csproj"
             }
           }
         }

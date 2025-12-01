@@ -1,0 +1,48 @@
+﻿@model IEnumerable<PrintingOrderManager.Core.DTOs.OrderItemDto>
+
+@{
+    ViewData["Title"] = $"Задачи сотрудника: {ViewBag.WorkerName}";
+}
+
+<h2>Задачи сотрудника: @ViewBag.WorkerName</h2>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <strong>Всего объектов:</strong> @ViewBag.TotalItems
+    </div>
+    <div class="col-md-6">
+        <strong>Общая стоимость:</strong> @ViewBag.TotalCost.ToString("C")
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Заказ</th>
+                <th>Услуга</th>
+                <th>Оборудование</th>
+                <th>Бумага</th>
+                <th>Цвет</th>
+                <th>Кол-во</th>
+                <th>Стоимость</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.OrderId</td>
+                    <td>@item.ServiceName</td>
+                    <td>@item.EquipmentName</td>
+                    <td>@item.Paper</td>
+                    <td>@item.Color</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Cost.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
